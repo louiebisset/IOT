@@ -28,12 +28,19 @@ struct adv_mfg_data {
 } __packed;
 typedef struct adv_mfg_data adv_mfg_data_t;
 
+// Initilaise data to be advertised
+static adv_mfg_data_t mfg_data = {
+	.company_id = COMPANY_ID,
+	.temperature = -4,
+};
 /**
  * Our advertisement data structure.
  * 
  * We include the device name and the manufacturer specific data (which includes specific company ID and temperature sensor value).
  */
 static const struct bt_data ad[] = {
+	BT_DATA(BT_DATA_NAME_COMPLETE, DEVICE_NAME, DEVICE_NAME_LEN),
+	BT_DATA(BT_DATA_MANUFACTURER_DATA, (uint8_t *)&mfg_data, sizeof(mfg_data)),
 };
 
 /**
@@ -66,7 +73,17 @@ int main(void)
 	}
 
 	printk("Bluetooth initialized\n");
+	
+	printk("Element 1: T=0x%02x, L=0x%02x, V='C=0x%04x, T=%d'\n",
+       ad[1].type, ad[1].data_len,
+       ((adv_mfg_data_t *)ad[1].data)->company_id,
+       ((adv_mfg_data_t *)ad[1].data)->temperature);
 
-
+	err = bt_le_adv_start(adv_param, ad, ARRAY_SIZE(ad), NULL, 0);
+	if (err) {
+		printk("Advertising failed to start (err %d)\n", err);
+		return 0;
+	}
+	printk("Advertising successfully started\n");
 	return 0;
 }
