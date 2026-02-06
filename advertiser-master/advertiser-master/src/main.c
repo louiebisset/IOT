@@ -15,7 +15,7 @@
 #include <zephyr/sys/byteorder.h>
 
 // This is our device name from prj.conf
-#define DEVICE_NAME CONFIG_BT_DEVICE_NAME
+#define DEVICE_NAME "louie"
 #define DEVICE_NAME_LEN (sizeof(DEVICE_NAME) - 1)
 
 // This is the company ID that will be in the Manufacturer Specific Data
