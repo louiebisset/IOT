@@ -15,7 +15,7 @@
 #include <zephyr/sys/byteorder.h>
 
 // This is our device name from prj.conf
-#define DEVICE_NAME "louie"
+#define DEVICE_NAME "Q2TRAPPY"
 #define DEVICE_NAME_LEN (sizeof(DEVICE_NAME) - 1)
 
 // This is the company ID that will be in the Manufacturer Specific Data
@@ -31,7 +31,7 @@ typedef struct adv_mfg_data adv_mfg_data_t;
 // Initilaise data to be advertised
 static adv_mfg_data_t mfg_data = {
 	.company_id = COMPANY_ID,
-	.temperature = -4,
+	.temperature = 45,
 };
 /**
  * Our advertisement data structure.
