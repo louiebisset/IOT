@@ -1,0 +1,6 @@
+{
+    "nrf-connect.applications": [
+        "${workspaceFolder}\\task3",
+        "${workspaceFolder}\\CW_1"
+    ]
+}
