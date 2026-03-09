@@ -1,6 +1,4 @@
 {
-    "nrf-connect.applications": [
-        "${workspaceFolder}\\advertiser-master\\advertiser-master"
-    ],
+    "nrf-connect.applications": [],
     "cmake.ignoreCMakeListsMissing": true
 }

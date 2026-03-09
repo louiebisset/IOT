@@ -24,12 +24,19 @@ static system_state_t system_state = STATE_NORMAL;
 static float latest_temp_c = 0.0f;
 static int32_t latest_mv = 0;
 
-#define AVG_WINDOW_SAMPLES 600
-static float temp_buffer[AVG_WINDOW_SAMPLES];
-static int buffer_index = 0;
-static int valid_samples = 0;
-static float temp_sum = 0.0f;
-static float avg_temp_c = 0.0f;
+// Stores exact 1 min rolling average using fixed-point centi-degC
+#define SAMPLE_RATE_MS        100     // 100ms hardware sample rate
+#define DECIMATE_FACTOR       10      // store 1 in every 10 samples = 1s
+#define AVG_WINDOW_SAMPLES    60      // 60 × 1s = 60 seconds
+
+typedef struct {
+    int16_t  buffer[AVG_WINDOW_SAMPLES];  
+    int32_t  sum_centi;                 
+    int32_t  decimate_sum;                
+    uint16_t index;                       . 
+    uint8_t  valid_samples;              
+    uint8_t  decimate_count;              
+} temp_avg_t;
 
 #define SAMPLE_PERIOD_MS 100
 #define TEMP_THRESHOLD_C 28.0f
@@ -144,37 +151,30 @@ static int acquire_sample(sample_t *s)
 
 /* ===== Logic Function (now called under mutex) ===== */
 
+static temp_avg_t temp_avg = {0};  // replaces all scattered globals
+
 static void process_sample(const sample_t *s)
 {
     if (s == NULL) {
         return;
     }
-
+    if (system_state == STATE_FAULT) {
+        return;
+    }
     if (!s->valid) {
         system_state = STATE_FAULT;
         return;
     }
 
-    latest_temp_c = s->temp_c;
-    latest_mv = s->mv;
+    latest_temp_centi = s->temp_centi;
+    latest_mv         = s->mv;
 
-    if (valid_samples < AVG_WINDOW_SAMPLES) {
-        temp_buffer[buffer_index] = s->temp_c;
-        temp_sum += s->temp_c;
-        valid_samples++;
-    } else {
-        temp_sum -= temp_buffer[buffer_index];
-        temp_buffer[buffer_index] = s->temp_c;
-        temp_sum += s->temp_c;
-    }
+    // Update rolling 1-minute average (decimated)
+    temp_avg_update(&temp_avg, s->temp_centi);
 
-    buffer_index = (buffer_index + 1) % AVG_WINDOW_SAMPLES;
-
-    if (valid_samples > 0) {
-        avg_temp_c = temp_sum / (float)valid_samples;
-    }
-
-    if (avg_temp_c > TEMP_THRESHOLD_C) {
+    // Update system state
+    int16_t avg = temp_get_avg(&temp_avg);
+    if (avg > TEMP_THRESHOLD_CENTI) {
         system_state = STATE_WARNING;
     } else {
         system_state = STATE_NORMAL;
