@@ -46,15 +46,22 @@ static int16_t avg_temp_centi = 0;
 
 static bool drift_detected = false;
 
-/* Welford baseline tracking using 1-minute averages */
+/* Welford baseline tracking using stable 1-minute averages only */
 static uint32_t drift_count = 0;
 static int32_t  drift_mean_centi = 0;
 static int64_t  drift_M2 = 0;
 
-/* Count processed samples so Welford updates once per minute */
+/* Reference baseline captured after stable operation */
+static bool     drift_ref_valid = false;
+static int32_t  drift_ref_centi = 0;
+
+/* Count processed samples so drift logic updates once per minute */
 static uint16_t minute_sample_counter = 0;
 
 #define DRIFT_THRESHOLD_CENTI 200   // 2.00C
+#define STABLE_BAND_CENTI 50        // 0.50C
+#define DRIFT_REF_MIN_UPDATES 5
+
 //LED Setup
 #define LED0_NODE DT_ALIAS(led0)
 #if !DT_NODE_HAS_STATUS(LED0_NODE, okay)
@@ -170,25 +177,33 @@ static void button_pressed(const struct device *dev,
     calibration_requested = true;
 }
 
-static void update_drift_welford(int16_t one_min_avg_centi)
+static bool environment_is_stable(int16_t avg_centi, int16_t latest_centi)
+{
+    return ABS(latest_centi - avg_centi) <= STABLE_BAND_CENTI;
+}
+
+static void update_drift_welford(int16_t stable_avg_centi)
 {
     drift_count++;
 
     if (drift_count == 1) {
-        drift_mean_centi = one_min_avg_centi;
+        drift_mean_centi = stable_avg_centi;
         drift_M2 = 0;
-        drift_detected = false;
-        return;
+    } else {
+        int32_t delta = stable_avg_centi - drift_mean_centi;
+        drift_mean_centi += delta / (int32_t)drift_count;
+
+        int32_t delta2 = stable_avg_centi - drift_mean_centi;
+        drift_M2 += (int64_t)delta * (int64_t)delta2;
     }
 
-    int32_t delta = one_min_avg_centi - drift_mean_centi;
-    drift_mean_centi += delta / (int32_t)drift_count;
+    if (!drift_ref_valid && drift_count >= DRIFT_REF_MIN_UPDATES) {
+        drift_ref_centi = drift_mean_centi;
+        drift_ref_valid = true;
+    }
 
-    int32_t delta2 = one_min_avg_centi - drift_mean_centi;
-    drift_M2 += (int64_t)delta * (int64_t)delta2;
-
-    if ((one_min_avg_centi - drift_mean_centi) > DRIFT_THRESHOLD_CENTI ||
-        (drift_mean_centi - one_min_avg_centi) > DRIFT_THRESHOLD_CENTI) {
+    if (drift_ref_valid &&
+        ABS(drift_mean_centi - drift_ref_centi) > DRIFT_THRESHOLD_CENTI) {
         drift_detected = true;
     } else {
         drift_detected = false;
@@ -295,8 +310,12 @@ static void process_sample(const sample_t *s)
     minute_sample_counter++;
 
     if (minute_sample_counter >= AVG_WINDOW_SAMPLES) {
-        update_drift_welford(avg_temp_centi);
         minute_sample_counter = 0;
+
+        if (environment_is_stable(avg_temp_centi, latest_temp_centi) &&
+            avg_temp_centi <= warning_threshold_centi) {
+            update_drift_welford(avg_temp_centi);
+        }
     }
 
     if (drift_detected) {
@@ -314,18 +333,21 @@ static void report_status(void)
     int64_t now_ms = k_uptime_get();
 
     system_state_t st;
-    int16_t avg_centi, latest_centi, thresh_centi, drift_mean_local;
+    int16_t avg_centi, latest_centi, thresh_centi;
     int32_t mv;
-    bool drift_local;
+    int32_t drift_mean_local, drift_ref_local;
+    bool drift_local, drift_ref_ok;
 
     k_mutex_lock(&state_mutex, K_FOREVER);
-    st           = system_state;
-    avg_centi    = avg_temp_centi;
-    latest_centi = latest_temp_centi;
-    thresh_centi = warning_threshold_centi;
+    st               = system_state;
+    avg_centi        = avg_temp_centi;
+    latest_centi     = latest_temp_centi;
+    thresh_centi     = warning_threshold_centi;
     drift_mean_local = drift_mean_centi;
-    drift_local = drift_detected;
-    mv           = latest_mv;
+    drift_ref_local  = drift_ref_centi;
+    drift_ref_ok     = drift_ref_valid;
+    drift_local      = drift_detected;
+    mv               = latest_mv;
     k_mutex_unlock(&state_mutex);
 
     if (st == STATE_FAULT) {
@@ -335,15 +357,17 @@ static void report_status(void)
                state_to_string(st),
                led_to_string(st));
     } else {
-        printk("[%lld ms] Avg: %d.%02dC | Latest: %d.%02dC | Thresh: %d.%02dC | Base: %d.%02dC | Drift: %s | Mode: %s | LED: %s\n",
-            now_ms,
-            avg_centi / 100, ABS(avg_centi % 100),
-            latest_centi / 100, ABS(latest_centi % 100),
-            thresh_centi / 100, ABS(thresh_centi % 100),
-            drift_mean_local / 100, ABS(drift_mean_local % 100),
-            drift_local ? "YES" : "NO",
-            state_to_string(st),
-            led_to_string(st));
+        printk("[%lld ms] Avg: %d.%02dC | Latest: %d.%02dC | Thresh: %d.%02dC | Base: %d.%02dC | Ref: %d.%02dC | Drift: %s | Mode: %s | LED: %s\n",
+                now_ms,
+                avg_centi / 100, ABS(avg_centi % 100),
+                latest_centi / 100, ABS(latest_centi % 100),
+                thresh_centi / 100, ABS(thresh_centi % 100),
+                (int16_t)(drift_mean_local / 100), ABS((int16_t)(drift_mean_local % 100)),
+                drift_ref_ok ? (int16_t)(drift_ref_local / 100) : 0,
+                drift_ref_ok ? ABS((int16_t)(drift_ref_local % 100)) : 0,
+                drift_local ? "YES" : "NO",
+                state_to_string(st),
+                led_to_string(st));
     }
 }
 
