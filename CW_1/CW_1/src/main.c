@@ -1,83 +1,201 @@
-/* CW 1 – Multithreaded Step 1 */
+/* Design Challenge 1: High-Reliability Thermal Monitor and Controller */
 #include <zephyr/kernel.h>
 #include <zephyr/sys/printk.h>
 #include <zephyr/devicetree.h>
 #include <zephyr/drivers/adc.h>
 #include <zephyr/drivers/gpio.h>
 #include <stdbool.h>
+#include <zephyr/sys/util.h>
+#include <zephyr/sys/byteorder.h>
+#include <zephyr/bluetooth/bluetooth.h>
+#include <stdint.h>
 
+#define ABS(x) ((x) < 0 ? -(x) : (x))
+// State definitions
 typedef enum {
-    STATE_NORMAL = 0,
-    STATE_WARNING,
-    STATE_FAULT
+    STATE_NORMAL = 0, // = Average temp <= threshold
+    STATE_WARNING,    // = 1 min Average temp > threshold
+    STATE_FAULT,       // = Incorrect reading
+    STATE_DRIFT
 } system_state_t;
 
+//Sample Struct
 typedef struct {
     int16_t raw;
     int32_t mv;
-    float   temp_c;
+    int16_t temp_centi;
     bool    valid;
 } sample_t;
 
-/* ===== Shared state (protected by mutex) ===== */
+#define SAMPLE_PERIOD_MS 100    // Aquistion period
+#define DEFAULT_TEMP_THRESHOLD_CENTI 2800  // Temp warning thresh
+
+// Shared states
 static system_state_t system_state = STATE_NORMAL;
-static float latest_temp_c = 0.0f;
+static int16_t latest_temp_centi = 0;
 static int32_t latest_mv = 0;
+static int16_t warning_threshold_centi = DEFAULT_TEMP_THRESHOLD_CENTI;
 
+// Stores exact 1 min rolling average using fixed-point centi-degC
 #define AVG_WINDOW_SAMPLES 600
-static float temp_buffer[AVG_WINDOW_SAMPLES];
-static int buffer_index = 0;
-static int valid_samples = 0;
-static float temp_sum = 0.0f;
-static float avg_temp_c = 0.0f;
+static int16_t temp_buffer_centi[AVG_WINDOW_SAMPLES];
+static uint16_t buffer_index = 0;
+static uint16_t valid_samples = 0;
+static int32_t temp_sum_centi = 0;
+static int16_t avg_temp_centi = 0;
 
-#define SAMPLE_PERIOD_MS 100
-#define TEMP_THRESHOLD_C 28.0f
+static bool drift_detected = false;
 
-/* LED */
+/* Welford baseline tracking using 1-minute averages */
+static uint32_t drift_count = 0;
+static int32_t  drift_mean_centi = 0;
+static int64_t  drift_M2 = 0;
+
+/* Count processed samples so Welford updates once per minute */
+static uint16_t minute_sample_counter = 0;
+
+#define DRIFT_THRESHOLD_CENTI 200   // 2.00C
+//LED Setup
 #define LED0_NODE DT_ALIAS(led0)
 #if !DT_NODE_HAS_STATUS(LED0_NODE, okay)
 #error "Unsupported board: led0 devicetree alias is not defined"
 #endif
 static const struct gpio_dt_spec led0 = GPIO_DT_SPEC_GET(LED0_NODE, gpios);
 
-/* ADC */
+// Button Setup
+#define BUTTON0_NODE DT_ALIAS(sw0)
+#if !DT_NODE_HAS_STATUS(BUTTON0_NODE, okay)
+#error "Unsupported board: sw0 devicetree alias is not defined"
+#endif
+static const struct gpio_dt_spec button0 = GPIO_DT_SPEC_GET(BUTTON0_NODE, gpios);
+static struct gpio_callback button_cb_data;
+
+//ADC Setup
 static const struct adc_dt_spec adc_channel =
     ADC_DT_SPEC_GET(DT_PATH(zephyr_user));
 
-static int16_t adc_buf;
-static bool adc_setup_done;
+static int16_t adc_buf;     // rAW Adc buff
+static bool adc_setup_done; 
+static volatile bool calibration_requested = false;
+static int64_t last_button_press_ms = 0;
 
-/* Mutex for shared state */
 K_MUTEX_DEFINE(state_mutex);
-
-/* Message queue: samples from Acquisition -> Logic */
 K_MSGQ_DEFINE(sample_msgq, sizeof(sample_t), 10, 4);
+K_SEM_DEFINE(sample_sem, 0, 1);
+static struct k_timer sample_timer;
 
-/* ===== Utility ===== */
+// BLE Setup
+#define DEVICE_NAME "QASIM"
+#define DEVICE_NAME_LEN (sizeof(DEVICE_NAME) - 1)
+#define COMPANY_ID 0x0059
+#define GROUP_ID   0x01
+#define BLE_UPDATE_PERIOD_MS 1000
+#define BT_ADV_INTERVAL 0x00A0   
 
-static const char *state_to_string(system_state_t state)
+//BLE data Structs
+struct adv_mfg_data {
+    uint16_t company_id;
+    uint8_t  group_id;
+    int16_t  avg_temp_x100;
+    uint8_t  state;
+} __packed;
+
+static struct adv_mfg_data adv_mfg_data = {
+    .company_id = COMPANY_ID,
+    .group_id = GROUP_ID,
+    .avg_temp_x100 = 0,
+    .state = STATE_NORMAL,
+};
+
+static const struct bt_data ad[] = {
+    BT_DATA(BT_DATA_NAME_COMPLETE, DEVICE_NAME, DEVICE_NAME_LEN),
+    BT_DATA(BT_DATA_MANUFACTURER_DATA,
+            (uint8_t *)&adv_mfg_data,
+            sizeof(adv_mfg_data)),
+};
+
+static const struct bt_le_adv_param *adv_param = BT_LE_ADV_PARAM(
+    BT_LE_ADV_OPT_NONE,
+    BT_ADV_INTERVAL,
+    BT_ADV_INTERVAL,
+    NULL
+);
+
+static bool ble_started = false;
+
+//Utility Functions
+static const char *state_to_string(system_state_t state)    //Converts enum state to print in serial
 {
     switch (state) {
     case STATE_NORMAL:  return "NORMAL";
     case STATE_WARNING: return "WARNING";
     case STATE_FAULT:   return "FAULT";
+    case STATE_DRIFT:   return "DRIFT";
     default:            return "UNKNOWN";
     }
 }
 
-static const char *led_to_string(system_state_t state)
+static const char *led_to_string(system_state_t state)  //Converts state into diff LED modes
 {
     switch (state) {
     case STATE_NORMAL:  return "OFF";
     case STATE_WARNING: return "BLINKING";
     case STATE_FAULT:   return "SOLID";
+    case STATE_DRIFT:   return "BLINKING";
     default:            return "UNKNOWN";
     }
 }
 
-/* ===== Acquisition Function (unchanged logic) ===== */
+static void sample_timer_handler(struct k_timer *timer_id)
+{
+    ARG_UNUSED(timer_id);
+    k_sem_give(&sample_sem);
+}
 
+static void button_pressed(const struct device *dev,
+                           struct gpio_callback *cb,
+                           uint32_t pins)
+{
+    ARG_UNUSED(dev);
+    ARG_UNUSED(cb);
+    ARG_UNUSED(pins);
+
+    int64_t now = k_uptime_get();
+
+    if ((now - last_button_press_ms) < 200) {
+        return;
+    }
+
+    last_button_press_ms = now;
+    calibration_requested = true;
+}
+
+static void update_drift_welford(int16_t one_min_avg_centi)
+{
+    drift_count++;
+
+    if (drift_count == 1) {
+        drift_mean_centi = one_min_avg_centi;
+        drift_M2 = 0;
+        drift_detected = false;
+        return;
+    }
+
+    int32_t delta = one_min_avg_centi - drift_mean_centi;
+    drift_mean_centi += delta / (int32_t)drift_count;
+
+    int32_t delta2 = one_min_avg_centi - drift_mean_centi;
+    drift_M2 += (int64_t)delta * (int64_t)delta2;
+
+    if ((one_min_avg_centi - drift_mean_centi) > DRIFT_THRESHOLD_CENTI ||
+        (drift_mean_centi - one_min_avg_centi) > DRIFT_THRESHOLD_CENTI) {
+        drift_detected = true;
+    } else {
+        drift_detected = false;
+    }
+}
+
+//Aquisition Function
 static int acquire_sample(sample_t *s)
 {
     int err;
@@ -85,18 +203,19 @@ static int acquire_sample(sample_t *s)
     if (s == NULL) {
         return -EINVAL;
     }
-
+    //Initialise samples to 0
     s->raw = 0;
     s->mv = 0;
-    s->temp_c = 0.0f;
+    s->temp_centi = 0;
     s->valid = false;
 
+    //Check ADC Ready
     if (!adc_is_ready_dt(&adc_channel)) {
         printk("ADC %s is not ready\n", adc_channel.dev->name);
         return -EIO;
     }
 
-    if (!adc_setup_done) {
+    if (!adc_setup_done) {              //ADC Setup
         err = adc_channel_setup_dt(&adc_channel);
         if (err < 0) {
             printk("ADC channel setup failed (err=%d)\n", err);
@@ -105,35 +224,35 @@ static int acquire_sample(sample_t *s)
         adc_setup_done = true;
     }
 
-    struct adc_sequence sequence = {
+    struct adc_sequence sequence = {    //Read config
         .buffer = &adc_buf,
         .buffer_size = sizeof(adc_buf),
     };
 
-    err = adc_sequence_init_dt(&adc_channel, &sequence);
+    err = adc_sequence_init_dt(&adc_channel, &sequence);       //Fill sequence
     if (err < 0) {
         printk("ADC sequence init failed (err=%d)\n", err);
         return err;
     }
 
-    err = adc_read(adc_channel.dev, &sequence);
+    err = adc_read(adc_channel.dev, &sequence);     //ADC Conversion
     if (err < 0) {
         printk("ADC read failed (err=%d)\n", err);
         return err;
     }
 
-    s->raw = adc_buf;
+    s->raw = adc_buf;  //Stores results
     s->mv = s->raw;
 
-    err = adc_raw_to_millivolts_dt(&adc_channel, &s->mv);
+    err = adc_raw_to_millivolts_dt(&adc_channel, &s->mv);   //Converts from raw to mv
     if (err < 0) {
         printk("mV conversion failed\n");
         return err;
     }
 
-    s->temp_c = ((float)s->mv / 10.0f) - 273.15f;
+    s->temp_centi = (int16_t)((s->mv * 10) - 27315);
 
-    if (s->mv < 0 || s->temp_c < -40.0f || s->temp_c > 125.0f) {
+    if (s->mv < 0 || s->temp_centi < -4000 || s->temp_centi > 12500) {
         s->valid = false;
         return -ERANGE;
     }
@@ -142,8 +261,7 @@ static int acquire_sample(sample_t *s)
     return 0;
 }
 
-/* ===== Logic Function (now called under mutex) ===== */
-
+// Logic Function
 static void process_sample(const sample_t *s)
 {
     if (s == NULL) {
@@ -155,75 +273,131 @@ static void process_sample(const sample_t *s)
         return;
     }
 
-    latest_temp_c = s->temp_c;
+    latest_temp_centi = s->temp_centi;
     latest_mv = s->mv;
 
+    /* Update exact rolling 1-minute average */
     if (valid_samples < AVG_WINDOW_SAMPLES) {
-        temp_buffer[buffer_index] = s->temp_c;
-        temp_sum += s->temp_c;
+        temp_buffer_centi[buffer_index] = s->temp_centi;
+        temp_sum_centi += s->temp_centi;
         valid_samples++;
     } else {
-        temp_sum -= temp_buffer[buffer_index];
-        temp_buffer[buffer_index] = s->temp_c;
-        temp_sum += s->temp_c;
+        temp_sum_centi -= temp_buffer_centi[buffer_index];
+        temp_buffer_centi[buffer_index] = s->temp_centi;
+        temp_sum_centi += s->temp_centi;
     }
 
     buffer_index = (buffer_index + 1) % AVG_WINDOW_SAMPLES;
 
     if (valid_samples > 0) {
-        avg_temp_c = temp_sum / (float)valid_samples;
+        avg_temp_centi = (int16_t)(temp_sum_centi / (int32_t)valid_samples);
+    }
+    minute_sample_counter++;
+
+    if (minute_sample_counter >= AVG_WINDOW_SAMPLES) {
+        update_drift_welford(avg_temp_centi);
+        minute_sample_counter = 0;
     }
 
-    if (avg_temp_c > TEMP_THRESHOLD_C) {
+    if (drift_detected) {
+        system_state = STATE_DRIFT;
+    } else if (avg_temp_centi > warning_threshold_centi) {
         system_state = STATE_WARNING;
     } else {
         system_state = STATE_NORMAL;
     }
 }
 
-/* ===== Reporting Function (reads shared state under mutex) ===== */
-
+// Reporting Function
 static void report_status(void)
 {
     int64_t now_ms = k_uptime_get();
 
     system_state_t st;
-    float avg, latest;
+    int16_t avg_centi, latest_centi, thresh_centi, drift_mean_local;
     int32_t mv;
+    bool drift_local;
 
     k_mutex_lock(&state_mutex, K_FOREVER);
-    st     = system_state;
-    avg    = avg_temp_c;
-    latest = latest_temp_c;
-    mv     = latest_mv;
+    st           = system_state;
+    avg_centi    = avg_temp_centi;
+    latest_centi = latest_temp_centi;
+    thresh_centi = warning_threshold_centi;
+    drift_mean_local = drift_mean_centi;
+    drift_local = drift_detected;
+    mv           = latest_mv;
     k_mutex_unlock(&state_mutex);
 
     if (st == STATE_FAULT) {
-        printk("[%lld ms] Avg: --.-C | Raw: %d mV | Mode: %s | LED: %s\n",
+        printk("[%lld ms] Avg: --.-C | Voltage: %d mV | Mode: %s | LED: %s\n",
                now_ms,
                mv,
                state_to_string(st),
                led_to_string(st));
     } else {
-        printk("[%lld ms] Avg: %.2fC | Raw: %.2fC | Mode: %s | LED: %s\n",
-               now_ms,
-               (double)avg,
-               (double)latest,
-               state_to_string(st),
-               led_to_string(st));
+        printk("[%lld ms] Avg: %d.%02dC | Latest: %d.%02dC | Thresh: %d.%02dC | Base: %d.%02dC | Drift: %s | Mode: %s | LED: %s\n",
+            now_ms,
+            avg_centi / 100, ABS(avg_centi % 100),
+            latest_centi / 100, ABS(latest_centi % 100),
+            thresh_centi / 100, ABS(thresh_centi % 100),
+            drift_mean_local / 100, ABS(drift_mean_local % 100),
+            drift_local ? "YES" : "NO",
+            state_to_string(st),
+            led_to_string(st));
     }
 }
 
-/* ===== Threads ===== */
-
-/* Acquisition thread: highest priority, 100 ms periodic */
-void acquisition_thread(void *p1, void *p2, void *p3)
+// Thread Functions
+//BLE Thread- Updates the BLE payload with latest average temp and state
+void ble_thread(void *p1, void *p2, void *p3)
 {
-    ARG_UNUSED(p1); ARG_UNUSED(p2); ARG_UNUSED(p3);
-
-    int64_t next = k_uptime_get();
+    ARG_UNUSED(p1);
+    ARG_UNUSED(p2);
+    ARG_UNUSED(p3);
 
     while (1) {
+        if (!ble_started) {
+            k_sleep(K_MSEC(100));
+            continue;
+        }
+
+        system_state_t st;
+        int16_t avg_centi;
+        int err;
+
+        k_mutex_lock(&state_mutex, K_FOREVER);
+        st = system_state;
+        avg_centi = avg_temp_centi;
+        k_mutex_unlock(&state_mutex);
+
+        if (st == STATE_FAULT) {
+            k_sleep(K_MSEC(BLE_UPDATE_PERIOD_MS));
+            continue;
+        }
+
+        adv_mfg_data.avg_temp_x100 = sys_cpu_to_be16(avg_centi);
+        adv_mfg_data.state = (uint8_t)st;
+
+        err = bt_le_adv_update_data(ad, ARRAY_SIZE(ad), NULL, 0);
+        if (err) {
+            printk("BLE update failed (err=%d)\n", err);
+        }
+
+        k_sleep(K_MSEC(BLE_UPDATE_PERIOD_MS));
+    }
+}
+
+// Aquisition Thread - Runs every 100ms- takes 1 sample- sends to logic thread
+void acquisition_thread(void *p1, void *p2, void *p3)
+{
+    ARG_UNUSED(p1);
+    ARG_UNUSED(p2);
+    ARG_UNUSED(p3);
+
+    while (1) {
+        /* Wait until the 100 ms timer releases this thread */
+        k_sem_take(&sample_sem, K_FOREVER);
+
         sample_t s = {0};
         int err = acquire_sample(&s);
         if (err < 0) {
@@ -231,19 +405,14 @@ void acquisition_thread(void *p1, void *p2, void *p3)
         }
 
         /* Send sample to logic thread */
-        (void)k_msgq_put(&sample_msgq, &s, K_NO_WAIT);
-
-        next += SAMPLE_PERIOD_MS;
-        int64_t now = k_uptime_get();
-        int64_t delay = next - now;
-        if (delay < 0) {
-            delay = 0;
+        int q_err = k_msgq_put(&sample_msgq, &s, K_NO_WAIT);
+        if (q_err != 0) {
+            printk("sample_msgq put failed (err=%d)\n", q_err);
         }
-        k_sleep(K_MSEC(delay));
     }
 }
 
-/* Logic thread: consumes samples, updates shared state under mutex */
+// logic Thread - waits for sample from aquisition thread- processes it- updates shared state
 void logic_thread(void *p1, void *p2, void *p3)
 {
     ARG_UNUSED(p1); ARG_UNUSED(p2); ARG_UNUSED(p3);
@@ -259,18 +428,51 @@ void logic_thread(void *p1, void *p2, void *p3)
     }
 }
 
-/* Reporting thread: periodic logging */
+// Reporting Thread- Prints system status
 void reporting_thread(void *p1, void *p2, void *p3)
 {
-    ARG_UNUSED(p1); ARG_UNUSED(p2); ARG_UNUSED(p3);
+    ARG_UNUSED(p1);
+    ARG_UNUSED(p2);
+    ARG_UNUSED(p3);
+
+    int64_t next = k_uptime_get();
 
     while (1) {
+        if (calibration_requested) {
+            k_mutex_lock(&state_mutex, K_FOREVER);
+
+            if (warning_threshold_centi == 2600) {
+                warning_threshold_centi = 2800;
+            } else if (warning_threshold_centi == 2800) {
+                warning_threshold_centi = 3000;
+            } else if (warning_threshold_centi == 3000) {
+                warning_threshold_centi = 3200;
+            } else {
+                warning_threshold_centi = 2600;
+            }
+
+            calibration_requested = false;
+
+            printk("Calibration: threshold set to %d.%02dC\n",
+                   warning_threshold_centi / 100,
+                   ABS(warning_threshold_centi % 100));
+
+            k_mutex_unlock(&state_mutex);
+        }
+
         report_status();
-        k_sleep(K_MSEC(1000)); /* e.g. log every 500 ms */
+
+        next += 1000;
+        int64_t now = k_uptime_get();
+        int64_t delay = next - now;
+        if (delay < 0) {
+            delay = 0;
+        }
+
+        k_sleep(K_MSEC(delay));
     }
 }
-
-/* LED thread: handles OFF / BLINKING / SOLID */
+// LED Thread- Sets LED mode based on system state (off, blinking, solid)
 void led_thread(void *p1, void *p2, void *p3)
 {
     ARG_UNUSED(p1); ARG_UNUSED(p2); ARG_UNUSED(p3);
@@ -283,9 +485,9 @@ void led_thread(void *p1, void *p2, void *p3)
         k_mutex_unlock(&state_mutex);
 
         if (st == STATE_NORMAL) {
-            gpio_pin_set_dt(&led0, 0);
+            gpio_pin_set_dt(&led0, 0);      // OFF
             k_sleep(K_MSEC(100));
-        } else if (st == STATE_WARNING) {
+        } else if (st == STATE_WARNING || st == STATE_DRIFT) {
             gpio_pin_set_dt(&led0, 1);
             k_sleep(K_MSEC(50));
             gpio_pin_set_dt(&led0, 0);
@@ -299,40 +501,75 @@ void led_thread(void *p1, void *p2, void *p3)
     }
 }
 
-/* ===== Thread definitions ===== */
-
+// Thread Definitions - 5 is lowest priortiy 1 is highest
 #define STACK_SIZE 1024
-#define ACQ_PRIO   1
+#define ACQ_PRIO   1    // Highest priortiy
 #define LOGIC_PRIO 2
 #define LED_PRIO   3
 #define REP_PRIO   4
+#define BLE_PRIO   5    // Lowest priority
 
 K_THREAD_DEFINE(acq_tid,   STACK_SIZE, acquisition_thread, NULL, NULL, NULL, ACQ_PRIO,   0, 0);
 K_THREAD_DEFINE(logic_tid, STACK_SIZE, logic_thread,       NULL, NULL, NULL, LOGIC_PRIO, 0, 0);
 K_THREAD_DEFINE(led_tid,   STACK_SIZE, led_thread,         NULL, NULL, NULL, LED_PRIO,   0, 0);
 K_THREAD_DEFINE(rep_tid,   STACK_SIZE, reporting_thread,   NULL, NULL, NULL, REP_PRIO,   0, 0);
+K_THREAD_DEFINE(ble_tid,   STACK_SIZE, ble_thread,         NULL, NULL, NULL, BLE_PRIO,   0, 0);
 
-/* ===== main ===== */
-
+//main
 int main(void)
 {
     int err;
 
-    printk("CW_1 Thermal Monitoring – Multithreaded Step 1\n");
+    printk("CW_1 Thermal Monitoring \n");
 
-    if (!gpio_is_ready_dt(&led0)) {
+    if (!gpio_is_ready_dt(&led0)) {     //Check LED Ready
         printk("LED device not ready\n");
         return 0;
     }
 
-    err = gpio_pin_configure_dt(&led0, GPIO_OUTPUT_INACTIVE);
+    err = gpio_pin_configure_dt(&led0, GPIO_OUTPUT_INACTIVE);   //Config LED
     if (err < 0) {
         printk("LED configure failed (err=%d)\n", err);
         return 0;
     }
 
-    /* Threads already started by K_THREAD_DEFINE */
+        if (!gpio_is_ready_dt(&button0)) {
+        printk("Button device not ready\n");
+        return 0;
+    }
+
+    err = gpio_pin_configure_dt(&button0, GPIO_INPUT);
+    if (err < 0) {
+        printk("Button configure failed (err=%d)\n", err);
+        return 0;
+    }
+
+    err = gpio_pin_interrupt_configure_dt(&button0, GPIO_INT_EDGE_TO_ACTIVE);
+    if (err < 0) {
+        printk("Button interrupt configure failed (err=%d)\n", err);
+        return 0;
+    }
+
+    gpio_init_callback(&button_cb_data, button_pressed, BIT(button0.pin));
+    gpio_add_callback(button0.port, &button_cb_data);
+
+    err = bt_enable(NULL);  // Start bluetooth
+    if (err) {
+        printk("Bluetooth init failed (err=%d)\n", err);
+        return 0;
+    }
+
+    err = bt_le_adv_start(adv_param, ad, ARRAY_SIZE(ad), NULL, 0);  //Start advertising
+    if (err) {
+        printk("Advertising failed to start (err=%d)\n", err);
+        return 0;
+    }
+    ble_started = true;  //Allows BLE thread to advertise
+    
+    k_timer_init(&sample_timer, sample_timer_handler, NULL);
+    k_timer_start(&sample_timer, K_MSEC(SAMPLE_PERIOD_MS), K_MSEC(SAMPLE_PERIOD_MS));
+
     while (1) {
-        k_sleep(K_FOREVER);
+        k_sleep(K_FOREVER); //Main can sleep as threads running
     }
 }
