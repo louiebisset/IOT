@@ -1,10 +1,13 @@
-/* CW 1 – Multithreaded Step 1 */
+/* CW 1 – Multithreaded Step 1 – FIXED */
+
 #include <zephyr/kernel.h>
 #include <zephyr/sys/printk.h>
 #include <zephyr/devicetree.h>
 #include <zephyr/drivers/adc.h>
 #include <zephyr/drivers/gpio.h>
-#include <stdbool.h>
+#include <stdbool.h> 
+
+#define ABS(x) ((x) < 0 ? -(x) : (x))
 
 typedef enum {
     STATE_NORMAL = 0,
@@ -15,51 +18,67 @@ typedef enum {
 typedef struct {
     int16_t raw;
     int32_t mv;
-    float   temp_c;
+    int16_t temp_centi;
     bool    valid;
 } sample_t;
 
-/* ===== Shared state (protected by mutex) ===== */
-static system_state_t system_state = STATE_NORMAL;
-static float latest_temp_c = 0.0f;
-static int32_t latest_mv = 0;
+/* ===== Shared state ===== */
 
-// Stores exact 1 min rolling average using fixed-point centi-degC
-#define SAMPLE_RATE_MS        100     // 100ms hardware sample rate
-#define DECIMATE_FACTOR       10      // store 1 in every 10 samples = 1s
-#define AVG_WINDOW_SAMPLES    60      // 60 × 1s = 60 seconds
+static system_state_t system_state      = STATE_NORMAL;
+static int16_t        latest_temp_centi = 0;
+static int32_t        latest_mv         = 0; 
+static int32_t temp_sum_centi = 0;
+static int16_t avg_temp_centi = 0;
+static uint16_t valid_samples = 0;  
+static int32_t decimate_sum   = 0;
+static uint8_t decimate_count = 0;
+
+/* ===== Rolling Average Settings ===== */
+
+#define SAMPLE_RATE_MS     100
+#define DECIMATE_FACTOR    10
+#define AVG_WINDOW_SAMPLES 60
 
 typedef struct {
-    int16_t  buffer[AVG_WINDOW_SAMPLES];  
-    int32_t  sum_centi;                 
-    int32_t  decimate_sum;                
-    uint16_t index;                       . 
-    uint8_t  valid_samples;              
-    uint8_t  decimate_count;              
+    int16_t buffer[AVG_WINDOW_SAMPLES];
+    int32_t sum_centi;
+    int32_t decimate_sum;
+    uint16_t index;
+    uint16_t valid_samples;
+    uint8_t  decimate_count;
 } temp_avg_t;
 
-#define SAMPLE_PERIOD_MS 100
-#define TEMP_THRESHOLD_C 28.0f
+static temp_avg_t temp_avg = {0};
 
-/* LED */
+#define SAMPLE_PERIOD_MS      100
+#define TEMP_THRESHOLD_CENTI  2800
+
+/* ===== LED ===== */
+
 #define LED0_NODE DT_ALIAS(led0)
+
 #if !DT_NODE_HAS_STATUS(LED0_NODE, okay)
 #error "Unsupported board: led0 devicetree alias is not defined"
 #endif
+
 static const struct gpio_dt_spec led0 = GPIO_DT_SPEC_GET(LED0_NODE, gpios);
 
-/* ADC */
+/* ===== ADC ===== */
+
 static const struct adc_dt_spec adc_channel =
     ADC_DT_SPEC_GET(DT_PATH(zephyr_user));
 
 static int16_t adc_buf;
-static bool adc_setup_done;
+static bool    adc_setup_done;
 
-/* Mutex for shared state */
+/* ===== Synchronisation ===== */
+
 K_MUTEX_DEFINE(state_mutex);
 
-/* Message queue: samples from Acquisition -> Logic */
-K_MSGQ_DEFINE(sample_msgq, sizeof(sample_t), 10, 4);
+/* Queue: Acquisition -> Logic
+ * FIX 2: Increased queue depth from 10 to 20 so that a temporarily slow
+ * logic thread does not cause silent sample drops under normal burst load. */
+K_MSGQ_DEFINE(sample_msgq, sizeof(sample_t), 20, 4); /* FIX 2 */
 
 /* ===== Utility ===== */
 
@@ -83,7 +102,7 @@ static const char *led_to_string(system_state_t state)
     }
 }
 
-/* ===== Acquisition Function (unchanged logic) ===== */
+/* ===== Acquisition ===== */
 
 static int acquire_sample(sample_t *s)
 {
@@ -93,10 +112,10 @@ static int acquire_sample(sample_t *s)
         return -EINVAL;
     }
 
-    s->raw = 0;
-    s->mv = 0;
-    s->temp_c = 0.0f;
-    s->valid = false;
+    s->raw        = 0;
+    s->mv         = 0;
+    s->temp_centi = 0;
+    s->valid      = false;
 
     if (!adc_is_ready_dt(&adc_channel)) {
         printk("ADC %s is not ready\n", adc_channel.dev->name);
@@ -113,7 +132,7 @@ static int acquire_sample(sample_t *s)
     }
 
     struct adc_sequence sequence = {
-        .buffer = &adc_buf,
+        .buffer      = &adc_buf,
         .buffer_size = sizeof(adc_buf),
     };
 
@@ -130,7 +149,7 @@ static int acquire_sample(sample_t *s)
     }
 
     s->raw = adc_buf;
-    s->mv = s->raw;
+    s->mv  = s->raw;
 
     err = adc_raw_to_millivolts_dt(&adc_channel, &s->mv);
     if (err < 0) {
@@ -138,20 +157,19 @@ static int acquire_sample(sample_t *s)
         return err;
     }
 
-    s->temp_c = ((float)s->mv / 10.0f) - 273.15f;
+    s->temp_centi = (int16_t)((s->mv * 10) - 27315);
 
-    if (s->mv < 0 || s->temp_c < -40.0f || s->temp_c > 125.0f) {
+    if (s->mv < 0 || s->temp_centi < -4000 || s->temp_centi > 12500) {
         s->valid = false;
         return -ERANGE;
     }
 
     s->valid = true;
+
     return 0;
 }
 
-/* ===== Logic Function (now called under mutex) ===== */
-
-static temp_avg_t temp_avg = {0};  // replaces all scattered globals
+/* ===== Logic ===== */
 
 static void process_sample(const sample_t *s)
 {
@@ -169,54 +187,67 @@ static void process_sample(const sample_t *s)
     latest_temp_centi = s->temp_centi;
     latest_mv         = s->mv;
 
-    // Update rolling 1-minute average (decimated)
-    temp_avg_update(&temp_avg, s->temp_centi);
+    /* Decimate: accumulate DECIMATE_FACTOR samples before adding to buffer */
+    temp_avg.decimate_sum += s->temp_centi;
+    temp_avg.decimate_count++;
 
-    // Update system state
-    int16_t avg = temp_get_avg(&temp_avg);
-    if (avg > TEMP_THRESHOLD_CENTI) {
-        system_state = STATE_WARNING;
-    } else {
-        system_state = STATE_NORMAL;
+    if (temp_avg.decimate_count >= DECIMATE_FACTOR) {
+        int16_t decimated = (int16_t)(temp_avg.decimate_sum / DECIMATE_FACTOR);
+        temp_avg.decimate_sum   = 0;
+        temp_avg.decimate_count = 0;
+
+        if (temp_avg.valid_samples < AVG_WINDOW_SAMPLES) {
+            temp_avg.buffer[temp_avg.index] = decimated;
+            temp_avg.sum_centi += decimated;
+            temp_avg.valid_samples++;
+        } else {
+            temp_avg.sum_centi -= temp_avg.buffer[temp_avg.index];
+            temp_avg.buffer[temp_avg.index] = decimated;
+            temp_avg.sum_centi += decimated;
+        }
+
+        temp_avg.index = (temp_avg.index + 1) % AVG_WINDOW_SAMPLES;
+    }
+
+    if (temp_avg.valid_samples > 0) {
+        avg_temp_centi = (int16_t)(temp_avg.sum_centi / (int32_t)temp_avg.valid_samples);
     }
 }
+/* ===== Reporting ===== */
 
-/* ===== Reporting Function (reads shared state under mutex) ===== */
-
+// Reporting Function
 static void report_status(void)
 {
     int64_t now_ms = k_uptime_get();
 
     system_state_t st;
-    float avg, latest;
+    int16_t avg_centi, latest_centi;
     int32_t mv;
 
     k_mutex_lock(&state_mutex, K_FOREVER);
-    st     = system_state;
-    avg    = avg_temp_c;
-    latest = latest_temp_c;
-    mv     = latest_mv;
+    st           = system_state;
+    avg_centi    = avg_temp_centi;
+    latest_centi = latest_temp_centi;
+    mv           = latest_mv;
     k_mutex_unlock(&state_mutex);
 
     if (st == STATE_FAULT) {
-        printk("[%lld ms] Avg: --.-C | Raw: %d mV | Mode: %s | LED: %s\n",
+        printk("[%lld ms] Avg: --.-C | Voltage: %d mV | Mode: %s | LED: %s\n",
                now_ms,
                mv,
                state_to_string(st),
                led_to_string(st));
     } else {
-        printk("[%lld ms] Avg: %.2fC | Raw: %.2fC | Mode: %s | LED: %s\n",
+        printk("[%lld ms] Avg: %d.%02dC | Latest: %d.%02dC | Mode: %s | LED: %s\n",
                now_ms,
-               (double)avg,
-               (double)latest,
+               avg_centi / 100, ABS(avg_centi % 100),
+               latest_centi / 100, ABS(latest_centi % 100),
                state_to_string(st),
                led_to_string(st));
     }
 }
-
 /* ===== Threads ===== */
 
-/* Acquisition thread: highest priority, 100 ms periodic */
 void acquisition_thread(void *p1, void *p2, void *p3)
 {
     ARG_UNUSED(p1); ARG_UNUSED(p2); ARG_UNUSED(p3);
@@ -224,26 +255,29 @@ void acquisition_thread(void *p1, void *p2, void *p3)
     int64_t next = k_uptime_get();
 
     while (1) {
+
         sample_t s = {0};
+
         int err = acquire_sample(&s);
         if (err < 0) {
             s.valid = false;
         }
 
-        /* Send sample to logic thread */
-        (void)k_msgq_put(&sample_msgq, &s, K_NO_WAIT);
+        /* FIX 2: Log a warning when the queue is full so drops are visible
+         * rather than silently discarded. */
+        if (k_msgq_put(&sample_msgq, &s, K_NO_WAIT) != 0) {
+            printk("WARNING: sample queue full, sample dropped\n");
+        }
 
         next += SAMPLE_PERIOD_MS;
-        int64_t now = k_uptime_get();
-        int64_t delay = next - now;
-        if (delay < 0) {
-            delay = 0;
-        }
+
+        int64_t delay = next - k_uptime_get();
+        if (delay < 0) delay = 0;
+
         k_sleep(K_MSEC(delay));
     }
 }
 
-/* Logic thread: consumes samples, updates shared state under mutex */
 void logic_thread(void *p1, void *p2, void *p3)
 {
     ARG_UNUSED(p1); ARG_UNUSED(p2); ARG_UNUSED(p3);
@@ -251,6 +285,7 @@ void logic_thread(void *p1, void *p2, void *p3)
     sample_t s;
 
     while (1) {
+
         k_msgq_get(&sample_msgq, &s, K_FOREVER);
 
         k_mutex_lock(&state_mutex, K_FOREVER);
@@ -259,23 +294,30 @@ void logic_thread(void *p1, void *p2, void *p3)
     }
 }
 
-/* Reporting thread: periodic logging */
 void reporting_thread(void *p1, void *p2, void *p3)
 {
     ARG_UNUSED(p1); ARG_UNUSED(p2); ARG_UNUSED(p3);
 
     while (1) {
+
         report_status();
-        k_sleep(K_MSEC(1000)); /* e.g. log every 500 ms */
+
+        k_sleep(K_MSEC(1000));
     }
 }
 
-/* LED thread: handles OFF / BLINKING / SOLID */
 void led_thread(void *p1, void *p2, void *p3)
 {
     ARG_UNUSED(p1); ARG_UNUSED(p2); ARG_UNUSED(p3);
 
+    /* FIX 4: Track the previous LED output level so that the FAULT branch
+     * only calls gpio_pin_set_dt once (on the first entry) and then simply
+     * sleeps, avoiding a redundant driver call every 200 ms when the state
+     * cannot change. */
+    int led_on = -1; /* unknown initial state */
+
     while (1) {
+
         system_state_t st;
 
         k_mutex_lock(&state_mutex, K_FOREVER);
@@ -283,23 +325,40 @@ void led_thread(void *p1, void *p2, void *p3)
         k_mutex_unlock(&state_mutex);
 
         if (st == STATE_NORMAL) {
-            gpio_pin_set_dt(&led0, 0);
+
+            if (led_on != 0) {
+                gpio_pin_set_dt(&led0, 0);
+                led_on = 0;
+            }
             k_sleep(K_MSEC(100));
+
         } else if (st == STATE_WARNING) {
+
             gpio_pin_set_dt(&led0, 1);
+            led_on = 1;
             k_sleep(K_MSEC(50));
+
             gpio_pin_set_dt(&led0, 0);
+            led_on = 0;
             k_sleep(K_MSEC(50));
+
         } else if (st == STATE_FAULT) {
-            gpio_pin_set_dt(&led0, 1);
+
+            /* Solid ON: only drive the pin if not already on. */
+            if (led_on != 1) {
+                gpio_pin_set_dt(&led0, 1);
+                led_on = 1;
+            }
             k_sleep(K_MSEC(200));
+
         } else {
+
             k_sleep(K_MSEC(100));
         }
     }
 }
 
-/* ===== Thread definitions ===== */
+/* ===== Thread Definitions ===== */
 
 #define STACK_SIZE 1024
 #define ACQ_PRIO   1
@@ -307,10 +366,17 @@ void led_thread(void *p1, void *p2, void *p3)
 #define LED_PRIO   3
 #define REP_PRIO   4
 
-K_THREAD_DEFINE(acq_tid,   STACK_SIZE, acquisition_thread, NULL, NULL, NULL, ACQ_PRIO,   0, 0);
-K_THREAD_DEFINE(logic_tid, STACK_SIZE, logic_thread,       NULL, NULL, NULL, LOGIC_PRIO, 0, 0);
-K_THREAD_DEFINE(led_tid,   STACK_SIZE, led_thread,         NULL, NULL, NULL, LED_PRIO,   0, 0);
-K_THREAD_DEFINE(rep_tid,   STACK_SIZE, reporting_thread,   NULL, NULL, NULL, REP_PRIO,   0, 0);
+K_THREAD_DEFINE(acq_tid,   STACK_SIZE, acquisition_thread,
+                NULL, NULL, NULL, ACQ_PRIO,   0, 0);
+
+K_THREAD_DEFINE(logic_tid, STACK_SIZE, logic_thread,
+                NULL, NULL, NULL, LOGIC_PRIO, 0, 0);
+
+K_THREAD_DEFINE(led_tid,   STACK_SIZE, led_thread,
+                NULL, NULL, NULL, LED_PRIO,   0, 0);
+
+K_THREAD_DEFINE(rep_tid,   STACK_SIZE, reporting_thread,
+                NULL, NULL, NULL, REP_PRIO,   0, 0);
 
 /* ===== main ===== */
 
@@ -318,7 +384,7 @@ int main(void)
 {
     int err;
 
-    printk("CW_1 Thermal Monitoring – Multithreaded Step 1\n");
+    printk("CW1 Thermal Monitoring – Multithreaded\n");
 
     if (!gpio_is_ready_dt(&led0)) {
         printk("LED device not ready\n");
@@ -331,7 +397,6 @@ int main(void)
         return 0;
     }
 
-    /* Threads already started by K_THREAD_DEFINE */
     while (1) {
         k_sleep(K_FOREVER);
     }
