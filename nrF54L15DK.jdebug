@@ -1,0 +1,20 @@
+// This file will be overwritten on each session.
+// Any manual changes made to this file will be lost.
+
+void TargetDownload (void) {
+    Util.Log ("Downloading Program: c:\Users\Student\IOT\CW_1\CW_1\build\merged.hex");
+    Target.LoadMemory ("c:\Users\Student\IOT\CW_1\CW_1\build\merged.hex", 0);
+}
+
+void OnProjectLoad (void) {
+  Edit.SysVar (VAR_POWER_SAMPLING_SPEED, FREQ_20_KHZ);
+  Project.SetDevice ("nRF54L15_M33");
+  Project.SetHostIF ("USB", "1057775223");
+  Project.SetTargetIF ("SWD");
+  Project.SetTIFSpeed ("4 MHz");
+  Project.AddSvdFile ("$(InstallDir)/Config/CPU/Cortex-M4F.svd");
+  Project.AddSvdFile ("c:\ncs\v3.2.1\modules\hal\nordic\nrfx\bsp\stable\mdk\nrf54l15_application.svd");
+  Project.SetOSPlugin ("ZephyrPlugin.js");
+  File.Open ("c:\Users\Student\IOT\CW_1\CW_1\build\CW_1\zephyr\zephyr.elf");
+  Window.Show ("Zephyr");
+}

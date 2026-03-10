@@ -5,7 +5,9 @@
 #include <zephyr/devicetree.h>
 #include <zephyr/drivers/adc.h>
 #include <zephyr/drivers/gpio.h>
-#include <stdbool.h> 
+#include <stdbool.h>  
+
+#include <SEGGER_SYSVIEW.h>
 
 #define ABS(x) ((x) < 0 ? -(x) : (x))
 
@@ -175,15 +177,17 @@ static void process_sample(const sample_t *s)
 {
     if (s == NULL) {
         return;
-    }
+    } 
+
     if (system_state == STATE_FAULT) {
         return;
     }
     if (!s->valid) {
+        SEGGER_SYSVIEW_PrintfHost("State change: %s -> FAULT", state_to_string(system_state));
         system_state = STATE_FAULT;
         return;
-    }
-
+    } 
+    
     latest_temp_centi = s->temp_centi;
     latest_mv         = s->mv;
 
@@ -229,21 +233,16 @@ static void report_status(void)
     avg_centi    = avg_temp_centi;
     latest_centi = latest_temp_centi;
     mv           = latest_mv;
-    k_mutex_unlock(&state_mutex);
+    k_mutex_unlock(&state_mutex); 
 
-    if (st == STATE_FAULT) {
-        printk("[%lld ms] Avg: --.-C | Voltage: %d mV | Mode: %s | LED: %s\n",
-               now_ms,
-               mv,
-               state_to_string(st),
-               led_to_string(st));
+   if (avg_temp_centi > TEMP_THRESHOLD_CENTI) {
+        if (system_state != STATE_WARNING) {
+            system_state = STATE_WARNING;
+        }
     } else {
-        printk("[%lld ms] Avg: %d.%02dC | Latest: %d.%02dC | Mode: %s | LED: %s\n",
-               now_ms,
-               avg_centi / 100, ABS(avg_centi % 100),
-               latest_centi / 100, ABS(latest_centi % 100),
-               state_to_string(st),
-               led_to_string(st));
+        if (system_state != STATE_NORMAL) {
+            system_state = STATE_NORMAL;
+        }
     }
 }
 /* ===== Threads ===== */
