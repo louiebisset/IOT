@@ -8,7 +8,9 @@
 #include <zephyr/sys/util.h>
 #include <zephyr/sys/byteorder.h>
 #include <zephyr/bluetooth/bluetooth.h>
-#include <stdint.h>
+#include <stdint.h> 
+#include <SEGGER_SYSVIEW.h>
+
 
 #define ABS(x) ((x) < 0 ? -(x) : (x))
 // State definitions
@@ -31,18 +33,32 @@ typedef struct {
 #define DEFAULT_TEMP_THRESHOLD_CENTI 2800  // Temp warning thresh
 
 // Shared states
-static system_state_t system_state = STATE_NORMAL;
-static int16_t latest_temp_centi = 0;
-static int32_t latest_mv = 0;
+static system_state_t system_state      = STATE_NORMAL;
+static int16_t        latest_temp_centi = 0;
+static int32_t        latest_mv         = 0; 
+static int32_t temp_sum_centi = 0;
+static int16_t avg_temp_centi = 0;
+static uint16_t valid_samples = 0;  
+static int32_t decimate_sum   = 0;
+static uint8_t decimate_count = 0;
 static int16_t warning_threshold_centi = DEFAULT_TEMP_THRESHOLD_CENTI;
 
 // Stores exact 1 min rolling average using fixed-point centi-degC
-#define AVG_WINDOW_SAMPLES 600
-static int16_t temp_buffer_centi[AVG_WINDOW_SAMPLES];
-static uint16_t buffer_index = 0;
-static uint16_t valid_samples = 0;
-static int32_t temp_sum_centi = 0;
-static int16_t avg_temp_centi = 0;
+#define SAMPLE_RATE_MS     100
+#define DECIMATE_FACTOR    10
+#define AVG_WINDOW_SAMPLES 60
+
+typedef struct {
+    int16_t buffer[AVG_WINDOW_SAMPLES];
+    int32_t sum_centi;
+    int32_t decimate_sum;
+    uint16_t index;
+    uint16_t valid_samples;
+    uint8_t  decimate_count;
+} temp_avg_t; 
+
+static temp_avg_t temp_avg = {0};
+
 
 static bool drift_detected = false;
 
@@ -281,29 +297,46 @@ static void process_sample(const sample_t *s)
 {
     if (s == NULL) {
         return;
-    }
+    } 
 
-    if (!s->valid) {
-        system_state = STATE_FAULT;
+    if (system_state == STATE_FAULT) {
         return;
     }
-
+    if (!s->valid) {
+        SEGGER_SYSVIEW_PrintfHost("State change: %s -> FAULT", state_to_string(system_state));
+        system_state = STATE_FAULT;
+        return;
+    } 
+    
     latest_temp_centi = s->temp_centi;
-    latest_mv = s->mv;
+    latest_mv         = s->mv;
 
-    /* Update exact rolling 1-minute average */
-    if (valid_samples < AVG_WINDOW_SAMPLES) {
-        temp_buffer_centi[buffer_index] = s->temp_centi;
-        temp_sum_centi += s->temp_centi;
-        valid_samples++;
-    } else {
-        temp_sum_centi -= temp_buffer_centi[buffer_index];
-        temp_buffer_centi[buffer_index] = s->temp_centi;
-        temp_sum_centi += s->temp_centi;
+    /* Decimate: accumulate DECIMATE_FACTOR samples before adding to buffer */
+    temp_avg.decimate_sum += s->temp_centi;
+    temp_avg.decimate_count++;
+
+    if (temp_avg.decimate_count >= DECIMATE_FACTOR) {
+        int16_t decimated = (int16_t)(temp_avg.decimate_sum / DECIMATE_FACTOR);
+        temp_avg.decimate_sum   = 0;
+        temp_avg.decimate_count = 0;
+
+        if (temp_avg.valid_samples < AVG_WINDOW_SAMPLES) {
+            temp_avg.buffer[temp_avg.index] = decimated;
+            temp_avg.sum_centi += decimated;
+            temp_avg.valid_samples++;
+        } else {
+            temp_avg.sum_centi -= temp_avg.buffer[temp_avg.index];
+            temp_avg.buffer[temp_avg.index] = decimated;
+            temp_avg.sum_centi += decimated;
+        }
+
+        temp_avg.index = (temp_avg.index + 1) % AVG_WINDOW_SAMPLES;
     }
 
-    buffer_index = (buffer_index + 1) % AVG_WINDOW_SAMPLES;
-
+    if (temp_avg.valid_samples > 0) {
+        avg_temp_centi = (int16_t)(temp_avg.sum_centi / (int32_t)temp_avg.valid_samples);
+    } 
+    
     if (valid_samples > 0) {
         avg_temp_centi = (int16_t)(temp_sum_centi / (int32_t)valid_samples);
     }
@@ -326,6 +359,7 @@ static void process_sample(const sample_t *s)
         system_state = STATE_NORMAL;
     }
 }
+
 
 // Reporting Function
 static void report_status(void)
