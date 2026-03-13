@@ -36,15 +36,10 @@ typedef struct {
 static system_state_t system_state      = STATE_NORMAL;
 static int16_t        latest_temp_centi = 0;
 static int32_t        latest_mv         = 0; 
-static int32_t temp_sum_centi = 0;
 static int16_t avg_temp_centi = 0;
-static uint16_t valid_samples = 0;  
-static int32_t decimate_sum   = 0;
-static uint8_t decimate_count = 0;
 static int16_t warning_threshold_centi = DEFAULT_TEMP_THRESHOLD_CENTI;
 
 // Stores exact 1 min rolling average using fixed-point centi-degC
-#define SAMPLE_RATE_MS     100
 #define DECIMATE_FACTOR    10
 #define AVG_WINDOW_SAMPLES 60
 
@@ -298,10 +293,6 @@ static void process_sample(const sample_t *s)
     if (s == NULL) {
         return;
     } 
-
-    if (system_state == STATE_FAULT) {
-        return;
-    }
     if (!s->valid) {
         SEGGER_SYSVIEW_PrintfHost("State change: %s -> FAULT", state_to_string(system_state));
         system_state = STATE_FAULT;
@@ -337,9 +328,6 @@ static void process_sample(const sample_t *s)
         avg_temp_centi = (int16_t)(temp_avg.sum_centi / (int32_t)temp_avg.valid_samples);
     } 
     
-    if (valid_samples > 0) {
-        avg_temp_centi = (int16_t)(temp_sum_centi / (int32_t)valid_samples);
-    }
     minute_sample_counter++;
 
     if (minute_sample_counter >= AVG_WINDOW_SAMPLES) {
