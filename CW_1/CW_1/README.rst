@@ -85,4 +85,12 @@ Important Notes
 - If VDDA is set too low (e.g., 1.8 V), ADC readings may saturate and temperature
   changes may not be observed reliably.
 - This repository is intended for **teaching purposes** and does not contain
-  a complete reference solution.
+  a complete reference solution. 
+
+Metric,600-Sample Buffer,60-Sample Buffer,Running Mean (EMA)
+SRAM Usage,"2,400 Bytes",240 Bytes,4 Bytes
+SRAM Savings,Baseline (0%),90% Savings,99.8% Savings
+Execution Time,Slow (O(N)),Moderate,Fastest (O(1))
+Data Lag,High (600 samples),Medium (60 samples),Tunable via α
+Accuracy,Highest (True Mean),High (Windowed),Statistical Estimate
+Complexity,Simple Array,Circular Buffer,Single Equation
