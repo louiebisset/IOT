@@ -70,8 +70,8 @@ static int32_t  drift_ref_centi = 0;
 /* Count processed samples so drift logic updates once per minute */
 static uint16_t minute_sample_counter = 0;
 
-#define DRIFT_THRESHOLD_CENTI 100   // 1.00C
-#define STABLE_BAND_CENTI 50        // 0.50C
+#define DRIFT_THRESHOLD_CENTI 50   // 1.00C
+#define STABLE_BAND_CENTI 150        // 0.50C
 #define DRIFT_REF_MIN_UPDATES 1
 
 //LED Setup
