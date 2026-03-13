@@ -42,7 +42,7 @@ static int16_t warning_threshold_centi = DEFAULT_TEMP_THRESHOLD_CENTI;
 // Stores exact 1 min rolling average using fixed-point centi-degC
 #define DECIMATE_FACTOR    10
 #define AVG_WINDOW_SAMPLES 60
-#define DRIFT_UPDATE_SAMPLES 600 
+#define DRIFT_UPDATE_SAMPLES 60  // testing val 
 
 typedef struct {
     int16_t buffer[AVG_WINDOW_SAMPLES];
