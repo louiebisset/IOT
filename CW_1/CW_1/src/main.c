@@ -219,9 +219,9 @@ static void update_drift_welford(int16_t stable_avg_centi)
         drift_detected = true;
 
         if (drift_mean_centi > drift_ref_centi) {
-            drift_ref_centi -= 2;
+            drift_ref_centi -= 200;
         } else {
-            drift_ref_centi += 2;
+            drift_ref_centi += 200;
         }
     } else {
         drift_detected = false;
