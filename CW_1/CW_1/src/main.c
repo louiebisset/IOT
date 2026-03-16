@@ -72,7 +72,7 @@ static uint16_t minute_sample_counter = 0;
 
 #define DRIFT_THRESHOLD_CENTI 200   // 2.00C
 #define STABLE_BAND_CENTI 400       // 4.00C
-#define DRIFT_REF_MIN_UPDATES 0.5 //24 hours
+#define DRIFT_REF_MIN_UPDATES 24*60 //24 hours
 
 //LED Setup
 #define LED0_NODE DT_ALIAS(led0)
