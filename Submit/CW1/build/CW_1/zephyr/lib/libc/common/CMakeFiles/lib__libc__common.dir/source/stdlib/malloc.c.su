@@ -1,9 +1,0 @@
-C:/ncs/v3.1.1/zephyr/include/zephyr/sys/mutex.h:151:19:sys_mutex_lock	8	static
-C:/ncs/v3.1.1/zephyr/lib/libc/common/source/stdlib/malloc.c:137:1:malloc_lock	8	static
-C:/ncs/v3.1.1/zephyr/lib/libc/common/source/stdlib/malloc.c:207:12:malloc_prepare	8	static
-c:\ncs\toolchains\c1a76fddb2\opt\zephyr-sdk\arm-zephyr-eabi\picolibc\include\stdlib.h:183:7:malloc	16	static
-c:\ncs\toolchains\c1a76fddb2\opt\zephyr-sdk\arm-zephyr-eabi\picolibc\include\stdlib.h:110:9:aligned_alloc	16	static
-c:\ncs\toolchains\c1a76fddb2\opt\zephyr-sdk\arm-zephyr-eabi\picolibc\include\stdlib.h:243:7:realloc	16	static
-c:\ncs\toolchains\c1a76fddb2\opt\zephyr-sdk\arm-zephyr-eabi\picolibc\include\stdlib.h:147:6:free	8	static
-c:\ncs\toolchains\c1a76fddb2\opt\zephyr-sdk\arm-zephyr-eabi\picolibc\include\stdlib.h:136:7:calloc	16	static
-C:/ncs/v3.1.1/zephyr/lib/libc/common/source/stdlib/malloc.c:326:7:reallocarray	8	static

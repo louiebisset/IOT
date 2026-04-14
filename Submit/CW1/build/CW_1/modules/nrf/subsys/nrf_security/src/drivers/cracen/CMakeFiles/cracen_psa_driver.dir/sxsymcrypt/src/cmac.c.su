@@ -1,2 +1,0 @@
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/cmac.c:48:12:sx_cmac_create_aes_ba411	16	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/cmac.c:82:5:sx_mac_create_aescmac	8	static

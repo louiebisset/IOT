@@ -1,4 +1,0 @@
-C:/ncs/v3.1.1/zephyr/subsys/random/random_xoshiro128.c:76:17:xoshiro128_next	8	static
-C:/ncs/v3.1.1/zephyr/subsys/random/random_xoshiro128.c:53:13:xoshiro128_init_state	8	static
-C:/ncs/v3.1.1/zephyr/subsys/random/random_xoshiro128.c:45:12:xoshiro128_initialize	8	static
-C:/ncs/v3.1.1/zephyr/subsys/random/random_xoshiro128.c:94:6:z_impl_sys_rand_get	32	static

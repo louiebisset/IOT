@@ -1,4 +1,0 @@
-C:/ncs/v3.1.1/zephyr/kernel/thread_monitor.c:40:13:thread_foreach_helper	32	static
-C:/ncs/v3.1.1/zephyr/kernel/thread_monitor.c:15:6:z_thread_monitor_exit	0	static
-C:/ncs/v3.1.1/zephyr/kernel/thread_monitor.c:80:6:k_thread_foreach	24	static
-C:/ncs/v3.1.1/zephyr/kernel/thread_monitor.c:87:6:k_thread_foreach_unlocked	24	static

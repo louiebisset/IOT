@@ -1,7 +1,0 @@
-default: CW_1
-build_dir: C:/Users/44747/Documents/GitHub/IOT/CW_1/CW_1/build
-domains:
-  - name: CW_1
-    build_dir: C:/Users/44747/Documents/GitHub/IOT/CW_1/CW_1/build/CW_1
-flash_order:
-  - CW_1

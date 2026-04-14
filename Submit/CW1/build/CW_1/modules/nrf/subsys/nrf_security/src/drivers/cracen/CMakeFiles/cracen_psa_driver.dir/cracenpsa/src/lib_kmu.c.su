@@ -1,9 +1,0 @@
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/lib_kmu.c:23:6:lib_kmu_clear_all_events	0	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/lib_kmu.c:37:12:trigger_task_and_wait_for_event_or_error	16	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/lib_kmu.c:120:12:block_kmu_slot	8	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/lib_kmu.c:73:5:lib_kmu_provision_slot	16	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/lib_kmu.c:112:5:lib_kmu_push_slot	8	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/lib_kmu.c:133:5:lib_kmu_block_slot_range	16	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/lib_kmu.c:146:5:lib_kmu_revoke_slot	8	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/lib_kmu.c:164:5:lib_kmu_read_metadata	8	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/lib_kmu.c:182:6:lib_kmu_is_slot_empty	16	static

@@ -1,3 +1,0 @@
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/ec_helpers.c:9:6:decode_u_coordinate_25519	0	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/ec_helpers.c:14:6:decode_scalar_25519	0	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/ec_helpers.c:21:6:decode_scalar_448	0	static

@@ -1,3 +1,0 @@
-C:/ncs/v3.1.1/nrf/subsys/mpsl/hwres/mpsl_hwres.c:34:40:nrfx_ppib_interconnect_find_by_ptr	0	static
-C:/ncs/v3.1.1/nrf/subsys/mpsl/hwres/mpsl_hwres.c:17:6:mpsl_hwres_dppi_channel_alloc	16	static
-C:/ncs/v3.1.1/nrf/subsys/mpsl/hwres/mpsl_hwres.c:63:6:mpsl_hwres_ppib_channel_alloc	8	static

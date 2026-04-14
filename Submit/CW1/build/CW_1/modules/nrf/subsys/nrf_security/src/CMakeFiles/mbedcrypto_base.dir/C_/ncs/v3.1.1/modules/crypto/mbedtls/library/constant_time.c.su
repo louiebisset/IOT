@@ -1,4 +1,0 @@
-C:/ncs/v3.1.1/modules/crypto/oberon-psa-crypto/library/constant_time_impl.h:382:38:mbedtls_ct_uint_ne	0	static
-C:/ncs/v3.1.1/modules/crypto/mbedtls/library/constant_time.c:68:5:mbedtls_ct_memcmp	8	static
-C:/ncs/v3.1.1/modules/crypto/mbedtls/library/constant_time.c:170:6:mbedtls_ct_memcpy_if	20	static
-C:/ncs/v3.1.1/modules/crypto/mbedtls/library/constant_time.c:215:6:mbedtls_ct_memcpy_offset	40	static

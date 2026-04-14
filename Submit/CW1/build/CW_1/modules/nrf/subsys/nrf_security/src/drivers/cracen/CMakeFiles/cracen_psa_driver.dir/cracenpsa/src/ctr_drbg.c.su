@@ -1,7 +1,0 @@
-C:/ncs/v3.1.1/modules/crypto/oberon-psa-crypto/include/psa/crypto_struct.h:396:20:psa_extend_key_usage_flags	0	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/ctr_drbg.c:54:12:trng_get_seed	24	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/ctr_drbg.c:85:21:ctr_drbg_update	144	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/ctr_drbg.c:166:21:cracen_reseed	56	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/ctr_drbg.c:124:14:cracen_init_random	56	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/ctr_drbg.c:186:14:cracen_get_random	112	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/ctr_drbg.c:257:14:cracen_free_random	0	static

@@ -1,7 +1,0 @@
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/silexpk/target/hw/ik/ikhardware.c:107:12:sx_ik_gen_keys	24	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/silexpk/target/hw/ik/ikhardware.c:27:5:sx_pk_is_ik_cmd	0	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/silexpk/target/hw/ik/ikhardware.c:32:5:sx_ik_read_status	8	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/silexpk/target/hw/ik/ikhardware.c:46:5:sx_pk_list_ik_inslots	32	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/silexpk/target/hw/ik/ikhardware.c:186:6:sx_pk_read_ik_capabilities	8	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/silexpk/target/hw/ik/ikhardware.c:208:5:sx_pk_ik_derive_keys	16	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/silexpk/target/hw/ik/ikhardware.c:222:5:sx_pk_ik_rng_reconfig	16	static

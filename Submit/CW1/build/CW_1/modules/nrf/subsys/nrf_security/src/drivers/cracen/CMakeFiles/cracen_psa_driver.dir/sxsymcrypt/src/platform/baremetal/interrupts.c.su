@@ -1,5 +1,0 @@
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/platform/baremetal/interrupts.c:44:6:cracen_isr_handler	8	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/platform/baremetal/interrupts.c:72:17:cracen_wait_for_interrupt	16	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/platform/baremetal/interrupts.c:25:6:cracen_interrupts_init	8	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/platform/baremetal/interrupts.c:85:10:cracen_wait_for_cm_interrupt	8	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/platform/baremetal/interrupts.c:99:10:cracen_wait_for_pke_interrupt	8	static

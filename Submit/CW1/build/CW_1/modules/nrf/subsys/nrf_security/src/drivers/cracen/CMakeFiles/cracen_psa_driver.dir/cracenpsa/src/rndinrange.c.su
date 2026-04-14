@@ -1,4 +1,0 @@
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/rndinrange.c:16:12:is_zero_bytestring	0	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/rndinrange.c:26:12:rnd_in_range_continue	24	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/rndinrange.c:46:12:rnd_in_range_get_rnd	24	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/rndinrange.c:68:5:cracen_get_rnd_in_range	24	static

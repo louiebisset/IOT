@@ -1,4 +1,0 @@
-C:/ncs/v3.1.1/modules/hal/nordic/nrfx/soc/nrfx_coredep.h:147:24:nrfx_coredep_delay_us	8	static
-C:/ncs/v3.1.1/zephyr/soc/nordic/nrf54l/soc.c:41:20:power_and_clock_configuration	0	static
-C:/ncs/v3.1.1/zephyr/soc/nordic/nrf54l/soc.c:153:5:nordicsemi_nrf54l_init	8	static
-C:/ncs/v3.1.1/zephyr/soc/nordic/nrf54l/soc.c:170:6:arch_busy_wait	8	static

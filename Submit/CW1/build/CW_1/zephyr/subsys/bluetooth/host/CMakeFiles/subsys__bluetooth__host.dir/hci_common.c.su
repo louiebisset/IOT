@@ -1,3 +1,0 @@
-C:/ncs/v3.1.1/zephyr/subsys/bluetooth/host/hci_common.c:19:17:bt_hci_evt_create	16	static
-C:/ncs/v3.1.1/zephyr/subsys/bluetooth/host/hci_common.c:35:17:bt_hci_cmd_complete_create	16	static
-C:/ncs/v3.1.1/zephyr/subsys/bluetooth/host/hci_common.c:59:17:bt_hci_cmd_status_create	16	static

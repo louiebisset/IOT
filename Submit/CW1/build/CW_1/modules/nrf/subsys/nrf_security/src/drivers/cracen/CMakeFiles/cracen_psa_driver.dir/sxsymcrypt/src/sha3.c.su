@@ -1,5 +1,0 @@
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/sha3.c:23:15:fips202_pad	4	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/sha3.c:61:13:shake256_digest	24	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/sha3.c:78:13:sha3_digest	24	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/sha3.c:94:12:sx_hash_create_ba418	16	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/sha3.c:113:12:sx_hash_create_ba418_shake256	8	static

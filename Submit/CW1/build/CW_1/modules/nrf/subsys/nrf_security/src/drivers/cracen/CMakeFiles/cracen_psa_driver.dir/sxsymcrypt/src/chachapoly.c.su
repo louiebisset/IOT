@@ -1,7 +1,0 @@
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/chachapoly.c:88:12:lenAlenC_chachapoly	0	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/chachapoly.c:105:12:sx_aead_create_chacha20poly1305	24	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/chachapoly.c:146:12:sx_blkcipher_create_chacha20	24	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/chachapoly.c:168:5:sx_aead_create_chacha20poly1305_enc	16	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/chachapoly.c:174:5:sx_aead_create_chacha20poly1305_dec	16	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/chachapoly.c:180:5:sx_blkcipher_create_chacha20_enc	16	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/chachapoly.c:186:5:sx_blkcipher_create_chacha20_dec	16	static

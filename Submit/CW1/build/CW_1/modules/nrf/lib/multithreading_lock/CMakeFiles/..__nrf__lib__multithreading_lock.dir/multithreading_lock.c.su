@@ -1,2 +1,0 @@
-C:/ncs/v3.1.1/nrf/lib/multithreading_lock/multithreading_lock.c:11:5:multithreading_lock_acquire	8	static
-C:/ncs/v3.1.1/nrf/lib/multithreading_lock/multithreading_lock.c:16:6:multithreading_lock_release	8	static

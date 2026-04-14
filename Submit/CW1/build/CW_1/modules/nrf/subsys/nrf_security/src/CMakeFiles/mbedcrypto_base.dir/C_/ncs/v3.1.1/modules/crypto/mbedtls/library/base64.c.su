@@ -1,4 +1,0 @@
-C:/ncs/v3.1.1/modules/crypto/mbedtls/library/base64.c:27:15:mbedtls_ct_base64_enc_char	4	static
-C:/ncs/v3.1.1/modules/crypto/mbedtls/library/base64.c:42:13:mbedtls_ct_base64_dec_value	8	static
-C:/ncs/v3.1.1/modules/crypto/mbedtls/library/base64.c:62:5:mbedtls_base64_encode	48	static
-C:/ncs/v3.1.1/modules/crypto/mbedtls/library/base64.c:129:5:mbedtls_base64_decode	40	static

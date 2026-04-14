@@ -1,5 +1,0 @@
-C:/ncs/v3.1.1/zephyr/kernel/mempool.c:14:14:z_alloc_helper	16	static
-C:/ncs/v3.1.1/zephyr/kernel/mempool.c:175:14:z_thread_alloc_helper	16	static
-C:/ncs/v3.1.1/zephyr/kernel/mempool.c:58:6:k_free	8	static
-C:/ncs/v3.1.1/zephyr/kernel/mempool.c:196:7:z_thread_aligned_alloc	8	static
-C:/ncs/v3.1.1/zephyr/kernel/mempool.c:201:7:z_thread_malloc	8	static

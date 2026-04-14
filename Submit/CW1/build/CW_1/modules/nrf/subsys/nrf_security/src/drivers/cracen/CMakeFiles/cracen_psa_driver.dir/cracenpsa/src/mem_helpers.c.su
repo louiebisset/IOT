@@ -1,6 +1,0 @@
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/mem_helpers.c:10:5:constant_memcmp	16	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/mem_helpers.c:23:6:constant_memcmp_is_zero	8	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/mem_helpers.c:35:5:constant_memdiff_array_value	4	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/mem_helpers.c:47:6:memcpy_check_non_zero	4	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/mem_helpers.c:67:6:safe_memset	0	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/mem_helpers.c:79:6:safe_memzero	8	static

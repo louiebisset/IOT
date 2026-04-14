@@ -1,5 +1,0 @@
-C:/ncs/v3.1.1/zephyr/arch/arm/core/cortex_m/thread.c:60:6:arch_new_thread	4	static
-C:/ncs/v3.1.1/zephyr/arch/arm/core/cortex_m/thread.c:278:6:configure_builtin_stack_guard	0	static
-C:/ncs/v3.1.1/zephyr/arch/arm/core/cortex_m/thread.c:491:6:arch_switch_to_main_thread	8	static
-C:/ncs/v3.1.1/zephyr/arch/arm/core/cortex_m/thread.c:567:13:arch_irq_unlock_outlined	0	static
-C:/ncs/v3.1.1/zephyr/arch/arm/core/cortex_m/thread.c:576:21:arch_irq_lock_outlined	0	static

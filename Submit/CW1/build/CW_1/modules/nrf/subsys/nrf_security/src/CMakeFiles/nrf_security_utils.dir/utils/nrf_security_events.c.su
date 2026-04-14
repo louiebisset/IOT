@@ -1,4 +1,0 @@
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/utils/nrf_security_events.c:22:6:nrf_security_event_init	8	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/utils/nrf_security_events.c:27:10:nrf_security_event_wait	16	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/utils/nrf_security_events.c:33:6:nrf_security_event_clear	8	static
-C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/utils/nrf_security_events.c:38:10:nrf_security_event_set	8	static
