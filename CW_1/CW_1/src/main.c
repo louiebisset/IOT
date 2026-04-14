@@ -42,7 +42,7 @@ static int16_t warning_threshold_centi = DEFAULT_TEMP_THRESHOLD_CENTI;
 // Stores exact 1 min rolling average using fixed-point centi-degC
 #define DECIMATE_FACTOR    10
 #define AVG_WINDOW_SAMPLES 60
-#define DRIFT_UPDATE_SAMPLES 600*60*24  // 24 hours 
+#define DRIFT_UPDATE_SAMPLES 600  // 24 hours 600*60*24 
 
 typedef struct {
     int16_t buffer[AVG_WINDOW_SAMPLES];
@@ -68,11 +68,11 @@ static bool     drift_ref_valid = false;
 static int32_t  drift_ref_centi = 0;
 
 /* Count processed samples so drift logic updates once per minute */
-static uint16_t minute_sample_counter = 0;
+static uint32_t minute_sample_counter = 0;
 
 #define DRIFT_THRESHOLD_CENTI 200   // 2.00C
 #define STABLE_BAND_CENTI 400       // 4.00C
-#define DRIFT_REF_MIN_UPDATES 60 
+#define DRIFT_REF_MIN_UPDATES 1440  // REFERNCE VALID AFTER 24 HRS
 
 //LED Setup
 #define LED0_NODE DT_ALIAS(led0)
