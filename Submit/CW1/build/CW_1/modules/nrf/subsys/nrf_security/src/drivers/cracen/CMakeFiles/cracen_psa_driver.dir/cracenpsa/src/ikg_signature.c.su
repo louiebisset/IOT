@@ -1,0 +1,6 @@
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/ikg_signature.c:52:13:ecdsa_read_sig	16	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/ikg_signature.c:62:12:exit_ikg	24	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/ikg_signature.c:43:13:digest2op	24	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/ikg_signature.c:99:5:cracen_ikg_sign_digest	72	dynamic
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/ikg_signature.c:82:5:cracen_ikg_sign_message	40	dynamic
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/ikg_signature.c:163:5:cracen_ikg_create_pub_key	40	static

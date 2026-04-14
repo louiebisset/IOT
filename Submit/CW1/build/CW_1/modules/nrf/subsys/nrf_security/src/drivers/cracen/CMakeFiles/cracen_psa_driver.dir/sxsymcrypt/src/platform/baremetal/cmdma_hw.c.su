@@ -1,0 +1,3 @@
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/platform/baremetal/cmdma_hw.c:30:13:sx_hw_enable_interrupts	0	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/platform/baremetal/cmdma_hw.c:40:6:sx_hw_reserve	8	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/platform/baremetal/cmdma_hw.c:53:6:sx_cmdma_release_hw	8	static

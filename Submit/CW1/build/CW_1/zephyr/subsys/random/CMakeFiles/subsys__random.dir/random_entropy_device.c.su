@@ -1,0 +1,2 @@
+C:/ncs/v3.1.1/zephyr/subsys/random/random_entropy_device.c:15:12:rand_get	32	static
+C:/ncs/v3.1.1/zephyr/subsys/random/random_entropy_device.c:68:5:z_impl_sys_csrand_get	8	static

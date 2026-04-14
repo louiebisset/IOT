@@ -1,0 +1,7 @@
+C:/ncs/v3.1.1/zephyr/kernel/pipe.c:93:15:copy_to_pending_readers	40	static
+C:/ncs/v3.1.1/zephyr/kernel/pipe.c:37:12:wait_for	32	static
+C:/ncs/v3.1.1/zephyr/kernel/pipe.c:67:6:z_impl_k_pipe_init	0	static
+C:/ncs/v3.1.1/zephyr/kernel/pipe.c:147:5:z_impl_k_pipe_write	72	static
+C:/ncs/v3.1.1/zephyr/kernel/pipe.c:220:5:z_impl_k_pipe_read	88	static
+C:/ncs/v3.1.1/zephyr/kernel/pipe.c:273:6:z_impl_k_pipe_reset	24	static
+C:/ncs/v3.1.1/zephyr/kernel/pipe.c:287:6:z_impl_k_pipe_close	24	static

@@ -1,0 +1,2 @@
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/ecc.c:22:5:ecc_genpubkey	64	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/ecc.c:74:5:ecc_genprivkey	8	static

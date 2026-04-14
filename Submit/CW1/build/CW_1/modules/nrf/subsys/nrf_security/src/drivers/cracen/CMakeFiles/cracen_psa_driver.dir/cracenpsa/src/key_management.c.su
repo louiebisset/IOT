@@ -1,0 +1,13 @@
+C:/ncs/v3.1.1/modules/crypto/oberon-psa-crypto/include/psa/crypto_struct.h:396:20:psa_extend_key_usage_flags	0	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/key_management.c:1252:13:cracen_set_ikg_key_buffer	0	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/key_management.c:1272:21:cracen_ikg_get_builtin_key	40	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/key_management.c:884:14:cracen_export_public_key	0	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/key_management.c:933:14:cracen_import_key	80	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/key_management.c:1180:14:generate_key_for_kmu	80	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/key_management.c:1212:14:cracen_generate_key	16	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/key_management.c:1346:14:cracen_get_builtin_key	16	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/key_management.c:1377:14:mbedtls_psa_platform_get_builtin_key	16	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/key_management.c:1417:14:cracen_export_key	24	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/key_management.c:1470:14:cracen_copy_key	48	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/key_management.c:1526:14:cracen_destroy_key	8	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/key_management.c:1538:14:cracen_derive_key	0	static

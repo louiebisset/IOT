@@ -1,0 +1,11 @@
+C:/ncs/v3.1.1/zephyr/include/zephyr/logging/log_output.h:215:20:log_output_flush	24	static
+C:/ncs/v3.1.1/zephyr/subsys/logging/backends/log_backend_rtt.c:290:13:log_backend_rtt_init	0	static
+C:/ncs/v3.1.1/zephyr/subsys/logging/backends/log_backend_rtt.c:304:13:panic	8	static
+C:/ncs/v3.1.1/zephyr/subsys/logging/backends/log_backend_rtt.c:327:12:format_set	0	static
+C:/ncs/v3.1.1/zephyr/include/zephyr/kernel.h:579:23:k_msleep	8	static
+C:/ncs/v3.1.1/zephyr/subsys/logging/backends/log_backend_rtt.c:178:13:on_failed_write	8	static
+C:/ncs/v3.1.1/zephyr/subsys/logging/backends/log_backend_rtt.c:190:13:on_write	16	static
+C:/ncs/v3.1.1/zephyr/subsys/logging/backends/log_backend_rtt.c:207:12:data_out_block_mode	24	static
+C:/ncs/v3.1.1/zephyr/subsys/logging/backends/log_backend_rtt.c:259:12:data_out	8	static
+C:/ncs/v3.1.1/zephyr/subsys/logging/backends/log_backend_rtt.c:310:13:dropped	8	static
+C:/ncs/v3.1.1/zephyr/subsys/logging/backends/log_backend_rtt.c:317:13:process	8	static

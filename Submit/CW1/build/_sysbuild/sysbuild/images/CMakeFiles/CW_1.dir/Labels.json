@@ -1,0 +1,43 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/Users/44747/Documents/GitHub/IOT/CW_1/CW_1/build/_sysbuild/sysbuild/images/CMakeFiles/CW_1"
+		},
+		{
+			"file" : "C:/Users/44747/Documents/GitHub/IOT/CW_1/CW_1/build/_sysbuild/sysbuild/images/CMakeFiles/CW_1.rule"
+		},
+		{
+			"file" : "C:/Users/44747/Documents/GitHub/IOT/CW_1/CW_1/build/_sysbuild/sysbuild/images/CMakeFiles/CW_1-complete.rule"
+		},
+		{
+			"file" : "C:/Users/44747/Documents/GitHub/IOT/CW_1/CW_1/build/_sysbuild/sysbuild/images/CW_1-prefix/src/CW_1-stamp/CW_1-build.rule"
+		},
+		{
+			"file" : "C:/Users/44747/Documents/GitHub/IOT/CW_1/CW_1/build/_sysbuild/sysbuild/images/CW_1-prefix/src/CW_1-stamp/CW_1-configure.rule"
+		},
+		{
+			"file" : "C:/Users/44747/Documents/GitHub/IOT/CW_1/CW_1/build/_sysbuild/sysbuild/images/CW_1-prefix/src/CW_1-stamp/CW_1-download.rule"
+		},
+		{
+			"file" : "C:/Users/44747/Documents/GitHub/IOT/CW_1/CW_1/build/_sysbuild/sysbuild/images/CW_1-prefix/src/CW_1-stamp/CW_1-install.rule"
+		},
+		{
+			"file" : "C:/Users/44747/Documents/GitHub/IOT/CW_1/CW_1/build/_sysbuild/sysbuild/images/CW_1-prefix/src/CW_1-stamp/CW_1-mkdir.rule"
+		},
+		{
+			"file" : "C:/Users/44747/Documents/GitHub/IOT/CW_1/CW_1/build/_sysbuild/sysbuild/images/CW_1-prefix/src/CW_1-stamp/CW_1-patch.rule"
+		},
+		{
+			"file" : "C:/Users/44747/Documents/GitHub/IOT/CW_1/CW_1/build/_sysbuild/sysbuild/images/CW_1-prefix/src/CW_1-stamp/CW_1-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"CW_1"
+		],
+		"name" : "CW_1"
+	}
+}

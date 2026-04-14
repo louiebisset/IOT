@@ -1,0 +1,16 @@
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/hash.c:57:13:sx_hash_pad	4	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/hash.c:90:6:sx_ba413_digest	16	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/hash.c:112:12:sx_hash_create_ba413	16	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/hash.c:190:12:start_hash_hw	8	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/hash.c:52:6:sx_hash_free	8	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/hash.c:136:5:sx_hash_create	8	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/hash.c:143:5:sx_hash_resume_state	16	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/hash.c:162:5:sx_hash_feed	8	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/hash.c:197:5:sx_hash_save_state	8	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/hash.c:220:5:sx_hash_digest	8	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/hash.c:234:5:sx_hash_status	16	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/hash.c:256:5:sx_hash_wait	8	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/hash.c:267:8:sx_hash_get_alg_digestsz	0	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/hash.c:272:8:sx_hash_get_alg_blocksz	0	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/hash.c:277:8:sx_hash_get_digestsz	0	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/hash.c:282:8:sx_hash_get_blocksz	0	static

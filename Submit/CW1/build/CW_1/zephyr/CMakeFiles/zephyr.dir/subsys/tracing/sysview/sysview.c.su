@@ -1,0 +1,11 @@
+C:/ncs/v3.1.1/zephyr/subsys/tracing/sysview/sysview.c:95:12:sysview_init	8	static
+C:/ncs/v3.1.1/zephyr/subsys/tracing/sysview/sysview.c:18:10:sysview_get_timestamp	8	static
+C:/ncs/v3.1.1/zephyr/subsys/tracing/sysview/sysview.c:23:10:sysview_get_interrupt	0	static
+C:/ncs/v3.1.1/zephyr/subsys/tracing/sysview/sysview.c:32:6:sys_trace_k_thread_switched_in	8	static
+C:/ncs/v3.1.1/zephyr/subsys/tracing/sysview/sysview.c:45:6:sys_trace_k_thread_switched_out	8	static
+C:/ncs/v3.1.1/zephyr/subsys/tracing/sysview/sysview.c:50:6:sys_trace_isr_enter	8	static
+C:/ncs/v3.1.1/zephyr/subsys/tracing/sysview/sysview.c:55:6:sys_trace_isr_exit	8	static
+C:/ncs/v3.1.1/zephyr/subsys/tracing/sysview/sysview.c:60:6:sys_trace_isr_exit_to_scheduler	8	static
+C:/ncs/v3.1.1/zephyr/subsys/tracing/sysview/sysview.c:65:6:sys_trace_idle	8	static
+C:/ncs/v3.1.1/zephyr/subsys/tracing/sysview/sysview.c:74:6:sys_trace_idle_exit	0	static
+C:/ncs/v3.1.1/zephyr/subsys/tracing/sysview/sysview.c:81:6:sys_trace_named_event	56	static

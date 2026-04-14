@@ -1,0 +1,17 @@
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/ecdsa.c:56:12:clz_u8	0	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/ecdsa.c:163:13:ecdsa_read_sig	16	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/ecdsa.c:158:13:ecdsa_write_sk	8	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/ecdsa.c:145:13:ecdsa_write_pk	16	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/ecdsa.c:151:13:ecdsa_write_sig	16	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/ecdsa.c:78:13:digest2op	24	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/ecdsa.c:173:12:ecdsa_run_generate_sign	40	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/ecdsa.c:273:12:deterministic_ecdsa_hmac	288	dynamic
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/ecdsa.c:90:6:bits2int	32	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/ecdsa.c:120:6:bits2octets	32	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/ecdsa.c:321:12:run_deterministic_ecdsa_hmac_step	72	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/ecdsa.c:213:5:cracen_ecdsa_sign_digest	96	dynamic
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/ecdsa.c:197:5:cracen_ecdsa_sign_message	40	dynamic
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/ecdsa.c:415:5:cracen_ecdsa_sign_digest_deterministic	120	dynamic
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/ecdsa.c:480:5:cracen_ecdsa_sign_message_deterministic	40	dynamic
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/ecdsa.c:515:5:cracen_ecdsa_verify_digest	72	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/src/ecdsa.c:499:5:cracen_ecdsa_verify_message	40	dynamic

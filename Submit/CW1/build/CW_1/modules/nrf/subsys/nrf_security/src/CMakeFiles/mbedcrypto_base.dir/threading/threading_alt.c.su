@@ -1,0 +1,4 @@
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/threading/threading_alt.c:24:6:mbedtls_mutex_free_fn	0	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/threading/threading_alt.c:19:6:mbedtls_mutex_init_fn	8	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/threading/threading_alt.c:28:5:mbedtls_mutex_lock_fn	8	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/threading/threading_alt.c:33:5:mbedtls_mutex_unlock_fn	8	static

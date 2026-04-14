@@ -1,0 +1,8 @@
+C:/ncs/v3.1.1/modules/hal/cmsis/CMSIS/Core/Include/core_cm33.h:2390:22:__NVIC_EnableIRQ	0	static
+C:/ncs/v3.1.1/modules/hal/cmsis/CMSIS/Core/Include/core_cm33.h:2428:22:__NVIC_DisableIRQ	0	static
+C:/ncs/v3.1.1/modules/hal/cmsis/CMSIS/Core/Include/core_cm33.h:2587:22:__NVIC_SetPriority	0	static
+C:/ncs/v3.1.1/zephyr/arch/arm/core/cortex_m/irq_manage.c:56:6:arm_irq_enable	8	static
+C:/ncs/v3.1.1/zephyr/arch/arm/core/cortex_m/irq_manage.c:61:6:arm_irq_disable	8	static
+C:/ncs/v3.1.1/zephyr/arch/arm/core/cortex_m/irq_manage.c:66:5:arm_irq_is_enabled	0	static
+C:/ncs/v3.1.1/zephyr/arch/arm/core/cortex_m/irq_manage.c:80:6:arm_irq_priority_set	8	static
+C:/ncs/v3.1.1/zephyr/arch/arm/core/cortex_m/irq_manage.c:125:6:z_irq_spurious	8	static

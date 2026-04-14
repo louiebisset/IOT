@@ -1,0 +1,5 @@
+C:/ncs/v3.1.1/zephyr/kernel/timeslicing.c:54:13:slice_timeout	0	static
+C:/ncs/v3.1.1/zephyr/kernel/timeslicing.c:39:6:thread_is_sliceable	0	static
+C:/ncs/v3.1.1/zephyr/kernel/timeslicing.c:68:6:z_reset_time_slice	16	static
+C:/ncs/v3.1.1/zephyr/kernel/timeslicing.c:80:6:k_sched_time_slice_set	16	static
+C:/ncs/v3.1.1/zephyr/kernel/timeslicing.c:103:6:z_time_slice	16	static

@@ -1,0 +1,12 @@
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/silexpk/interface/sxbuf/sxbufops.c:19:6:sx_pk_ecop2mem_le	528	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/silexpk/interface/sxbuf/sxbufops.c:38:6:sx_pk_ecop2mem_be	24	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/silexpk/interface/sxbuf/sxbufops.c:49:6:sx_pk_ecop2mem	8	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/silexpk/interface/sxbuf/sxbufops.c:55:6:sx_pk_op2vmem_le	520	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/silexpk/interface/sxbuf/sxbufops.c:69:6:sx_pk_op2vmem_be	8	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/silexpk/interface/sxbuf/sxbufops.c:74:6:sx_pk_op2vmem	8	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/silexpk/interface/sxbuf/sxbufops.c:79:5:sx_op_size	0	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/silexpk/interface/sxbuf/sxbufops.c:85:6:sx_pk_mem2op_be	24	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/silexpk/interface/sxbuf/sxbufops.c:97:6:sx_pk_mem2op	8	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/silexpk/interface/sxbuf/sxbufops.c:102:6:sx_pk_mem2ecop	8	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/silexpk/interface/sxbuf/sxbufops.c:108:6:sx_pk_mem2affpt	16	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/silexpk/interface/sxbuf/sxbufops.c:114:6:sx_pk_affpt2mem	16	static

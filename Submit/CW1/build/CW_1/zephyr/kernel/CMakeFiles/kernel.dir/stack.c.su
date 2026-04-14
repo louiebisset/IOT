@@ -1,0 +1,5 @@
+C:/ncs/v3.1.1/zephyr/kernel/stack.c:27:6:k_stack_init	0	static
+C:/ncs/v3.1.1/zephyr/kernel/stack.c:44:9:z_impl_k_stack_alloc_init	16	static
+C:/ncs/v3.1.1/zephyr/kernel/stack.c:80:5:k_stack_cleanup	8	static
+C:/ncs/v3.1.1/zephyr/kernel/stack.c:101:5:z_impl_k_stack_push	32	static
+C:/ncs/v3.1.1/zephyr/kernel/stack.c:148:5:z_impl_k_stack_pop	24	static

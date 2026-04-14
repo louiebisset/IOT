@@ -1,0 +1,7 @@
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/cmdma.c:25:13:sx_cmdma_finalize_descs	0	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/cmdma.c:15:6:sx_cmdma_newcmd	0	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/cmdma.c:45:6:sx_cmdma_start	8	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/cmdma.c:73:6:cmdma_is_busy	0	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/cmdma.c:118:6:sx_cmdma_reset	0	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/cmdma.c:85:12:sx_cmdma_check_with_interrupts	8	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/cmdma.c:109:5:sx_cmdma_check	8	static

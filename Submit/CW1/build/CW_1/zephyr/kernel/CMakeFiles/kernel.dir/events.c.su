@@ -1,0 +1,11 @@
+C:/ncs/v3.1.1/zephyr/kernel/events.c:89:13:are_wait_conditions_met	0	static
+C:/ncs/v3.1.1/zephyr/kernel/events.c:133:17:k_event_post_internal	32	static
+C:/ncs/v3.1.1/zephyr/kernel/events.c:103:12:event_walk_op	16	static
+C:/ncs/v3.1.1/zephyr/kernel/events.c:242:17:k_event_wait_internal	56	static
+C:/ncs/v3.1.1/zephyr/kernel/events.c:52:6:z_impl_k_event_init	0	static
+C:/ncs/v3.1.1/zephyr/kernel/events.c:184:10:z_impl_k_event_post	8	static
+C:/ncs/v3.1.1/zephyr/kernel/events.c:198:10:z_impl_k_event_set	8	static
+C:/ncs/v3.1.1/zephyr/kernel/events.c:212:10:z_impl_k_event_set_masked	8	static
+C:/ncs/v3.1.1/zephyr/kernel/events.c:228:10:z_impl_k_event_clear	8	static
+C:/ncs/v3.1.1/zephyr/kernel/events.c:311:10:z_impl_k_event_wait	16	static
+C:/ncs/v3.1.1/zephyr/kernel/events.c:331:10:z_impl_k_event_wait_all	16	static

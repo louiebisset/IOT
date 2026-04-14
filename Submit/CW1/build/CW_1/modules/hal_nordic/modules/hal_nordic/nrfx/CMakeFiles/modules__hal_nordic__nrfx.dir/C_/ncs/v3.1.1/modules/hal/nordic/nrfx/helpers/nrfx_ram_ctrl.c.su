@@ -1,0 +1,9 @@
+C:/ncs/v3.1.1/modules/hal/nordic/nrfx/helpers/nrfx_ram_ctrl.h:103:22:nrfx_ram_ctrl_section_power_mask_enable_set	0	static
+C:/ncs/v3.1.1/modules/hal/nordic/nrfx/helpers/nrfx_ram_ctrl.h:143:22:nrfx_ram_ctrl_section_retention_mask_enable_set	4	static
+C:/ncs/v3.1.1/modules/hal/nordic/nrfx/helpers/nrfx_ram_ctrl.c:201:13:ram_ctrl_block_section_power_enable_set	8	static
+C:/ncs/v3.1.1/modules/hal/nordic/nrfx/helpers/nrfx_ram_ctrl.c:208:13:ram_ctrl_block_section_retention_enable_set	8	static
+C:/ncs/v3.1.1/modules/hal/nordic/nrfx/helpers/nrfx_ram_ctrl.c:215:13:ram_ctrl_block_section_iterate	24	static
+C:/ncs/v3.1.1/modules/hal/nordic/nrfx/helpers/nrfx_ram_ctrl.c:259:6:nrfx_ram_ctrl_power_enable_set	8	static
+C:/ncs/v3.1.1/modules/hal/nordic/nrfx/helpers/nrfx_ram_ctrl.c:267:6:nrfx_ram_ctrl_power_enable_all_set	8	static
+C:/ncs/v3.1.1/modules/hal/nordic/nrfx/helpers/nrfx_ram_ctrl.c:273:6:nrfx_ram_ctrl_retention_enable_set	8	static
+C:/ncs/v3.1.1/modules/hal/nordic/nrfx/helpers/nrfx_ram_ctrl.c:281:6:nrfx_ram_ctrl_retention_enable_all_set	8	static

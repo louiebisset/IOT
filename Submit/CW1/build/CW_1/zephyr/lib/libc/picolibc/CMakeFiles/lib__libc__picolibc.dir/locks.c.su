@@ -1,0 +1,10 @@
+c:\ncs\toolchains\c1a76fddb2\opt\zephyr-sdk\arm-zephyr-eabi\picolibc\include\sys\lock.h:40:13:__retarget_lock_init_recursive	8	static
+c:\ncs\toolchains\c1a76fddb2\opt\zephyr-sdk\arm-zephyr-eabi\picolibc\include\sys\lock.h:38:13:__retarget_lock_init	8	static
+c:\ncs\toolchains\c1a76fddb2\opt\zephyr-sdk\arm-zephyr-eabi\picolibc\include\sys\lock.h:44:13:__retarget_lock_close_recursive	8	static
+c:\ncs\toolchains\c1a76fddb2\opt\zephyr-sdk\arm-zephyr-eabi\picolibc\include\sys\lock.h:42:13:__retarget_lock_close	8	static
+c:\ncs\toolchains\c1a76fddb2\opt\zephyr-sdk\arm-zephyr-eabi\picolibc\include\sys\lock.h:48:13:__retarget_lock_acquire_recursive	8	static
+c:\ncs\toolchains\c1a76fddb2\opt\zephyr-sdk\arm-zephyr-eabi\picolibc\include\sys\lock.h:46:13:__retarget_lock_acquire	8	static
+C:/ncs/v3.1.1/zephyr/lib/libc/picolibc/locks.c:91:5:__retarget_lock_try_acquire_recursive	8	static
+C:/ncs/v3.1.1/zephyr/lib/libc/picolibc/locks.c:98:5:__retarget_lock_try_acquire	8	static
+c:\ncs\toolchains\c1a76fddb2\opt\zephyr-sdk\arm-zephyr-eabi\picolibc\include\sys\lock.h:52:13:__retarget_lock_release_recursive	8	static
+c:\ncs\toolchains\c1a76fddb2\opt\zephyr-sdk\arm-zephyr-eabi\picolibc\include\sys\lock.h:50:13:__retarget_lock_release	8	static

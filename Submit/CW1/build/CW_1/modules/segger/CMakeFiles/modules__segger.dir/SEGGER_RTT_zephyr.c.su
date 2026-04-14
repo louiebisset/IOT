@@ -1,0 +1,3 @@
+C:/ncs/v3.1.1/zephyr/modules/segger/SEGGER_RTT_zephyr.c:12:12:rtt_init	8	static
+C:/ncs/v3.1.1/zephyr/modules/segger/SEGGER_RTT_zephyr.c:19:14:zephyr_rtt_irq_lock	0	static
+C:/ncs/v3.1.1/zephyr/modules/segger/SEGGER_RTT_zephyr.c:24:6:zephyr_rtt_irq_unlock	0	static

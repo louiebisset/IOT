@@ -1,0 +1,15 @@
+C:/ncs/v3.1.1/nrf/subsys/mpsl/init/mpsl_init.c:322:16:m_config_clock_source_get	0	static
+C:/ncs/v3.1.1/nrf/subsys/mpsl/init/mpsl_init.c:271:1:mpsl_timer0_isr_wrapper	8	static
+C:/ncs/v3.1.1/nrf/subsys/mpsl/init/mpsl_init.c:278:1:mpsl_rtc0_isr_wrapper	8	static
+C:/ncs/v3.1.1/nrf/subsys/mpsl/init/mpsl_init.c:289:1:mpsl_radio_isr_wrapper	8	static
+C:/ncs/v3.1.1/nrf/subsys/mpsl/init/mpsl_init.c:359:16:mpsl_lib_init_internal	16	static
+C:/ncs/v3.1.1/nrf/subsys/mpsl/init/mpsl_init.c:466:12:mpsl_lib_init_sys	8	static
+C:/ncs/v3.1.1/nrf/subsys/mpsl/init/mpsl_init.c:304:13:m_assert_handler	72	dynamic,bounded
+C:/ncs/v3.1.1/nrf/subsys/mpsl/init/mpsl_init.c:202:13:mpsl_low_prio_work_handler	8	static
+C:/ncs/v3.1.1/nrf/subsys/mpsl/init/mpsl_init.c:499:12:mpsl_low_prio_init	24	static
+C:/ncs/v3.1.1/nrf/subsys/mpsl/init/mpsl_init.c:344:13:mpsl_calibration_work_handler	8	static
+C:/ncs/v3.1.1/nrf/subsys/mpsl/init/mpsl_init.c:197:13:mpsl_low_prio_irq_handler	8	static
+C:/ncs/v3.1.1/nrf/subsys/mpsl/init/mpsl_init.c:520:9:mpsl_lib_init	0	static
+C:/ncs/v3.1.1/nrf/subsys/mpsl/init/mpsl_init.c:544:9:mpsl_lib_uninit	0	static
+C:/ncs/v3.1.1/nrf/subsys/mpsl/init/mpsl_init.c:580:6:mpsl_constlat_request_callback	0	static
+C:/ncs/v3.1.1/nrf/subsys/mpsl/init/mpsl_init.c:589:6:mpsl_lowpower_request_callback	0	static

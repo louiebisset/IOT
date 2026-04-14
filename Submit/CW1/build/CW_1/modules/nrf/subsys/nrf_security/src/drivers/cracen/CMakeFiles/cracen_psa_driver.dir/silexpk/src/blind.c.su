@@ -1,0 +1,3 @@
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/silexpk/src/blind.c:22:20:sx_pk_default_blind_gen	0	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/silexpk/src/blind.c:11:6:sx_pk_cnx_configure_blinding	16	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/silexpk/src/blind.c:33:6:sx_pk_default_blinder	0	static

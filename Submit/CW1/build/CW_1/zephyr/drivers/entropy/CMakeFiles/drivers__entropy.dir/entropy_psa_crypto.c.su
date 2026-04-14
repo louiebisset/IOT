@@ -1,0 +1,2 @@
+C:/ncs/v3.1.1/zephyr/drivers/entropy/entropy_psa_crypto.c:28:12:entropy_psa_crypto_rng_get_entropy	8	static
+C:/ncs/v3.1.1/zephyr/drivers/entropy/entropy_psa_crypto.c:13:12:entropy_psa_crypto_rng_init	8	static

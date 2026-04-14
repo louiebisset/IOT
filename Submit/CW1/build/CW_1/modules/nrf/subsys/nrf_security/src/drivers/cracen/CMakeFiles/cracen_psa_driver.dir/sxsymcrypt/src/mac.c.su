@@ -1,0 +1,9 @@
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/mac.c:19:5:sx_mac_free	16	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/mac.c:80:12:sx_mac_run	8	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/mac.c:29:5:sx_mac_hw_reserve	24	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/mac.c:59:5:sx_mac_feed	8	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/mac.c:90:5:sx_mac_generate	8	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/mac.c:108:5:sx_mac_resume_state	16	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/mac.c:142:5:sx_mac_save_state	8	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/mac.c:165:5:sx_mac_status	16	static
+C:/ncs/v3.1.1/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/src/mac.c:184:5:sx_mac_wait	8	static

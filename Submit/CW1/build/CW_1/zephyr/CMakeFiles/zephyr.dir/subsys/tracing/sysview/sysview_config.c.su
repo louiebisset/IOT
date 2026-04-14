@@ -1,0 +1,6 @@
+C:/ncs/v3.1.1/zephyr/subsys/tracing/sysview/sysview_config.c:20:13:set_thread_name	24	static
+C:/ncs/v3.1.1/zephyr/subsys/tracing/sysview/sysview_config.c:58:13:send_task_list_cb	64	static
+C:/ncs/v3.1.1/zephyr/subsys/tracing/sysview/sysview_config.c:82:12:get_time_cb	8	static
+C:/ncs/v3.1.1/zephyr/subsys/tracing/sysview/sysview_config.c:50:13:cbSendSystemDesc	8	static
+C:/ncs/v3.1.1/zephyr/subsys/tracing/sysview/sysview_config.c:33:6:sys_trace_thread_info	72	static
+C:/ncs/v3.1.1/zephyr/subsys/tracing/sysview/sysview_config.c:95:6:SEGGER_SYSVIEW_Conf	8	static

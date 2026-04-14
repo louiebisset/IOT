@@ -1,0 +1,10 @@
+C:/ncs/v3.1.1/modules/hal/nordic/nrfx/mdk/nrf54l_erratas.h:1617:13:nrf54l_errata_31	0	static
+C:/ncs/v3.1.1/modules/hal/nordic/nrfx/mdk/nrf54l_erratas.h:1685:13:nrf54l_errata_32	0	static
+C:/ncs/v3.1.1/modules/hal/nordic/nrfx/mdk/nrf54l_erratas.h:1834:13:nrf54l_errata_37	0	static
+C:/ncs/v3.1.1/modules/hal/nordic/nrfx/mdk/nrf54l_erratas.h:2023:13:nrf54l_errata_40	0	static
+C:/ncs/v3.1.1/modules/hal/nordic/nrfx/mdk/nrf54l_erratas.h:2638:13:nrf54l_errata_48	0	static
+C:/ncs/v3.1.1/modules/hal/nordic/nrfx/mdk/system_nrf54l_approtect.h:64:20:nrf54l_handle_approtect_signal	0	static
+C:/ncs/v3.1.1/modules/hal/nordic/nrfx/mdk/system_nrf54l_approtect.h:104:20:nrf54l_handle_secureapprotect_signal	0	static
+C:/ncs/v3.1.1/modules/hal/nordic/nrfx/mdk/system_nrf54l_approtect.h:153:20:nrf54l_handle_approtect	8	static
+C:/ncs/v3.1.1/modules/hal/nordic/nrfx/mdk/system_nrf54l.c:58:6:SystemCoreClockUpdate	0	static
+C:/ncs/v3.1.1/modules/hal/nordic/nrfx/mdk/system_nrf54l.c:71:6:SystemInit	8	static

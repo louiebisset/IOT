@@ -1,0 +1,6 @@
+C:/ncs/v3.1.1/nrf/drivers/mpsl/clock_control/nrfx_clock_mpsl.c:16:13:mpsl_hfclk_src_callback	8	static
+C:/ncs/v3.1.1/nrf/drivers/mpsl/clock_control/nrfx_clock_mpsl.c:41:6:nrfx_clock_start	8	static
+C:/ncs/v3.1.1/nrf/drivers/mpsl/clock_control/nrfx_clock_mpsl.c:60:6:nrfx_clock_stop	8	static
+C:/ncs/v3.1.1/nrf/drivers/mpsl/clock_control/nrfx_clock_mpsl.c:79:6:nrfx_clock_enable	0	static
+C:/ncs/v3.1.1/nrf/drivers/mpsl/clock_control/nrfx_clock_mpsl.c:84:12:nrfx_clock_init	0	static
+C:/ncs/v3.1.1/nrf/drivers/mpsl/clock_control/nrfx_clock_mpsl.c:92:6:nrfx_power_clock_irq_handler	8	static

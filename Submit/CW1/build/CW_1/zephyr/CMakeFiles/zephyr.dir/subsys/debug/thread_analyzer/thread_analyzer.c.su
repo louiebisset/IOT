@@ -1,0 +1,6 @@
+C:/ncs/v3.1.1/zephyr/subsys/debug/thread_analyzer/thread_analyzer.c:47:13:thread_print_cb	24	static
+C:/ncs/v3.1.1/zephyr/subsys/debug/thread_analyzer/thread_analyzer.c:100:13:thread_analyze_cb	104	static
+C:/ncs/v3.1.1/zephyr/subsys/debug/thread_analyzer/thread_analyzer.c:178:13:isr_stack	32	static
+C:/ncs/v3.1.1/zephyr/subsys/debug/thread_analyzer/thread_analyzer.c:195:13:isr_stacks	8	static
+C:/ncs/v3.1.1/zephyr/subsys/debug/thread_analyzer/thread_analyzer.c:204:6:thread_analyzer_run	16	static
+C:/ncs/v3.1.1/zephyr/subsys/debug/thread_analyzer/thread_analyzer.c:231:6:thread_analyzer_print	8	static
