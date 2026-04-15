@@ -285,7 +285,7 @@ static int acquire_sample(sample_t *s)
 
     s->temp_centi = (int16_t)((s->mv * 10) - 27315);
 
-    if (s->mv < 0 || s->temp_centi < -4000 || s->temp_centi > 12500) {
+    if (s->mv < 0 || s->temp_centi < -4000 || s->temp_centi > 10000) {
         s->valid = false;
         return -ERANGE;
     }
