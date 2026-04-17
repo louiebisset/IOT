@@ -15,8 +15,8 @@
 #define ABS(x) ((x) < 0 ? -(x) : (x))
 // State definitions
 typedef enum {
-    STATE_NORMAL = 0, // = Average temp <= threshold
-    STATE_WARNING,    // = 1 min Average temp > threshold
+    STATE_NORMAL = 0, // = if the avg temp <= threshold
+    STATE_WARNING,    // = if the1 min Average temp > threshold
     STATE_FAULT,       // = Incorrect reading
     STATE_DRIFT
 } system_state_t;
@@ -39,10 +39,10 @@ static int32_t        latest_mv         = 0;
 static int16_t avg_temp_centi = 0;
 static int16_t warning_threshold_centi = DEFAULT_TEMP_THRESHOLD_CENTI;
 
-// Stores exact 1 min rolling average using fixed-point centi-degC
+// Stores 1 min rolling avg
 #define DECIMATE_FACTOR    10
 #define AVG_WINDOW_SAMPLES 60
-#define DRIFT_UPDATE_SAMPLES 600  // 24 hours 600*60*24 
+#define DRIFT_UPDATE_SAMPLES 600  // 24 hours 
 
 typedef struct {
     int16_t buffer[AVG_WINDOW_SAMPLES];
@@ -58,16 +58,15 @@ static temp_avg_t temp_avg = {0};
 
 static bool drift_detected = false;
 
-/* Welford baseline tracking using stable 1-minute averages only */
+// Welford baseline tracking
 static uint32_t drift_count = 0;
 static int32_t  drift_mean_centi = 0;
 static int64_t  drift_M2 = 0;
 
-/* Reference baseline captured after stable operation */
+// Reference baseline
 static bool     drift_ref_valid = false;
 static int32_t  drift_ref_centi = 0;
 
-/* Count processed samples so drift logic updates once per minute */
 static uint32_t minute_sample_counter = 0;
 
 #define DRIFT_THRESHOLD_CENTI 200   // 2.00C
@@ -93,7 +92,7 @@ static struct gpio_callback button_cb_data;
 static const struct adc_dt_spec adc_channel =
     ADC_DT_SPEC_GET(DT_PATH(zephyr_user));
 
-static int16_t adc_buf;     // rAW Adc buff
+static int16_t adc_buf;     // raw adc buff
 static bool adc_setup_done; 
 static volatile bool calibration_requested = false;
 static int64_t last_button_press_ms = 0;
@@ -143,7 +142,7 @@ static const struct bt_le_adv_param *adv_param = BT_LE_ADV_PARAM(
 static bool ble_started = false;
 
 //Utility Functions
-static const char *state_to_string(system_state_t state)    //Converts enum state to print in serial
+static const char *state_to_string(system_state_t state)  
 {
     switch (state) {
     case STATE_NORMAL:  return "NORMAL";
@@ -154,7 +153,7 @@ static const char *state_to_string(system_state_t state)    //Converts enum stat
     }
 }
 
-static const char *led_to_string(system_state_t state)  //Converts state into diff LED modes
+static const char *led_to_string(system_state_t state) 
 {
     switch (state) {
     case STATE_NORMAL:  return "OFF";
@@ -236,7 +235,7 @@ static int acquire_sample(sample_t *s)
     if (s == NULL) {
         return -EINVAL;
     }
-    //Initialise samples to 0
+    //Init samples
     s->raw = 0;
     s->mv = 0;
     s->temp_centi = 0;
@@ -262,13 +261,13 @@ static int acquire_sample(sample_t *s)
         .buffer_size = sizeof(adc_buf),
     };
 
-    err = adc_sequence_init_dt(&adc_channel, &sequence);       //Fill sequence
+    err = adc_sequence_init_dt(&adc_channel, &sequence);      
     if (err < 0) {
         printk("ADC sequence init failed (err=%d)\n", err);
         return err;
     }
 
-    err = adc_read(adc_channel.dev, &sequence);     //ADC Conversion
+    err = adc_read(adc_channel.dev, &sequence);    
     if (err < 0) {
         printk("ADC read failed (err=%d)\n", err);
         return err;
@@ -309,7 +308,7 @@ static void process_sample(const sample_t *s)
     latest_temp_centi = s->temp_centi;
     latest_mv         = s->mv;
 
-    /* Decimate: accumulate DECIMATE_FACTOR samples before adding to buffer */
+    // decimate
     temp_avg.decimate_sum += s->temp_centi;
     temp_avg.decimate_count++;
 
@@ -448,7 +447,7 @@ void acquisition_thread(void *p1, void *p2, void *p3)
     ARG_UNUSED(p3);
 
     while (1) {
-        /* Wait until the 100 ms timer releases this thread */
+        
         k_sem_take(&sample_sem, K_FOREVER);
 
         sample_t s = {0};
@@ -457,7 +456,7 @@ void acquisition_thread(void *p1, void *p2, void *p3)
             s.valid = false;
         }
 
-        /* Send sample to logic thread */
+        // send sample to logic
         int q_err = k_msgq_put(&sample_msgq, &s, K_NO_WAIT);
         if (q_err != 0) {
             printk("sample_msgq put failed (err=%d)\n", q_err);
